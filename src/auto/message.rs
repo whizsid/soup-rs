@@ -2,6 +2,8 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
+#[cfg(any(feature = "v2_34", feature = "dox"))]
+use gio;
 #[cfg(any(feature = "v2_28", feature = "dox"))]
 use glib;
 use glib::object::Cast;
@@ -9,6 +11,8 @@ use glib::object::IsA;
 use glib::signal::connect_raw;
 use glib::signal::SignalHandlerId;
 use glib::translate::*;
+#[cfg(any(feature = "v2_34", feature = "dox"))]
+use glib::value::SetValueOptional;
 use glib::GString;
 use glib::StaticType;
 use glib::Value;
@@ -17,11 +21,18 @@ use gobject_sys;
 use soup_sys;
 use std::boxed::Box as Box_;
 use std::fmt;
+#[cfg(any(feature = "v2_34", feature = "dox"))]
+use std::mem;
 use std::mem::transmute;
+#[cfg(any(feature = "v2_34", feature = "dox"))]
+use std::ptr;
 #[cfg(any(feature = "v2_26", feature = "dox"))]
 use Address;
 use HTTPVersion;
 use MemoryUse;
+use MessageBody;
+use MessageFlags;
+use MessageHeaders;
 use MessagePriority;
 #[cfg(any(feature = "v2_42", feature = "dox"))]
 use Request;
@@ -71,12 +82,12 @@ pub trait MessageExt: 'static {
     #[cfg(any(feature = "v2_30", feature = "dox"))]
     fn get_first_party(&self) -> Option<URI>;
 
-    //fn get_flags(&self) -> /*Ignored*/MessageFlags;
+    fn get_flags(&self) -> MessageFlags;
 
     fn get_http_version(&self) -> HTTPVersion;
 
-    //#[cfg(any(feature = "v2_34", feature = "dox"))]
-    //fn get_https_status(&self, certificate: /*Ignored*/gio::TlsCertificate) -> Option</*Ignored*/gio::TlsCertificateFlags>;
+    #[cfg(any(feature = "v2_34", feature = "dox"))]
+    fn get_https_status(&self) -> Option<(gio::TlsCertificate, gio::TlsCertificateFlags)>;
 
     #[cfg(any(feature = "v2_44", feature = "dox"))]
     fn get_priority(&self) -> MessagePriority;
@@ -103,7 +114,7 @@ pub trait MessageExt: 'static {
     #[cfg(any(feature = "v2_30", feature = "dox"))]
     fn set_first_party(&self, first_party: &mut URI);
 
-    //fn set_flags(&self, flags: /*Ignored*/MessageFlags);
+    fn set_flags(&self, flags: MessageFlags);
 
     fn set_http_version(&self, version: HTTPVersion);
 
@@ -147,19 +158,19 @@ pub trait MessageExt: 'static {
 
     fn set_property_reason_phrase(&self, reason_phrase: Option<&str>);
 
-    //fn get_property_request_body(&self) -> /*Ignored*/Option<MessageBody>;
+    fn get_property_request_body(&self) -> Option<MessageBody>;
 
     #[cfg(any(feature = "v2_46", feature = "dox"))]
     fn get_property_request_body_data(&self) -> Option<glib::Bytes>;
 
-    //fn get_property_request_headers(&self) -> /*Ignored*/Option<MessageHeaders>;
+    fn get_property_request_headers(&self) -> Option<MessageHeaders>;
 
-    //fn get_property_response_body(&self) -> /*Ignored*/Option<MessageBody>;
+    fn get_property_response_body(&self) -> Option<MessageBody>;
 
     #[cfg(any(feature = "v2_46", feature = "dox"))]
     fn get_property_response_body_data(&self) -> Option<glib::Bytes>;
 
-    //fn get_property_response_headers(&self) -> /*Ignored*/Option<MessageHeaders>;
+    fn get_property_response_headers(&self) -> Option<MessageHeaders>;
 
     fn get_property_server_side(&self) -> bool;
 
@@ -167,17 +178,17 @@ pub trait MessageExt: 'static {
 
     fn set_property_status_code(&self, status_code: u32);
 
-    //#[cfg(any(feature = "v2_34", feature = "dox"))]
-    //fn get_property_tls_certificate(&self) -> /*Ignored*/Option<gio::TlsCertificate>;
+    #[cfg(any(feature = "v2_34", feature = "dox"))]
+    fn get_property_tls_certificate(&self) -> Option<gio::TlsCertificate>;
 
-    //#[cfg(any(feature = "v2_34", feature = "dox"))]
-    //fn set_property_tls_certificate<P: IsA</*Ignored*/gio::TlsCertificate> + SetValueOptional>(&self, tls_certificate: Option<&P>);
+    #[cfg(any(feature = "v2_34", feature = "dox"))]
+    fn set_property_tls_certificate<P: IsA<gio::TlsCertificate> + SetValueOptional>(&self, tls_certificate: Option<&P>);
 
-    //#[cfg(any(feature = "v2_34", feature = "dox"))]
-    //fn get_property_tls_errors(&self) -> /*Ignored*/gio::TlsCertificateFlags;
+    #[cfg(any(feature = "v2_34", feature = "dox"))]
+    fn get_property_tls_errors(&self) -> gio::TlsCertificateFlags;
 
-    //#[cfg(any(feature = "v2_34", feature = "dox"))]
-    //fn set_property_tls_errors(&self, tls_errors: /*Ignored*/gio::TlsCertificateFlags);
+    #[cfg(any(feature = "v2_34", feature = "dox"))]
+    fn set_property_tls_errors(&self, tls_errors: gio::TlsCertificateFlags);
 
     //#[cfg(any(feature = "v2_28", feature = "dox"))]
     //fn connect_content_sniffed<Unsupported or ignored types>(&self, f: F) -> SignalHandlerId;
@@ -289,9 +300,11 @@ impl<O: IsA<Message>> MessageExt for O {
         }
     }
 
-    //fn get_flags(&self) -> /*Ignored*/MessageFlags {
-    //    unsafe { TODO: call soup_sys:soup_message_get_flags() }
-    //}
+    fn get_flags(&self) -> MessageFlags {
+        unsafe {
+            from_glib(soup_sys::soup_message_get_flags(self.as_ref().to_glib_none().0))
+        }
+    }
 
     fn get_http_version(&self) -> HTTPVersion {
         unsafe {
@@ -299,10 +312,16 @@ impl<O: IsA<Message>> MessageExt for O {
         }
     }
 
-    //#[cfg(any(feature = "v2_34", feature = "dox"))]
-    //fn get_https_status(&self, certificate: /*Ignored*/gio::TlsCertificate) -> Option</*Ignored*/gio::TlsCertificateFlags> {
-    //    unsafe { TODO: call soup_sys:soup_message_get_https_status() }
-    //}
+    #[cfg(any(feature = "v2_34", feature = "dox"))]
+    fn get_https_status(&self) -> Option<(gio::TlsCertificate, gio::TlsCertificateFlags)> {
+        unsafe {
+            let mut certificate = ptr::null_mut();
+            let mut errors = mem::MaybeUninit::uninit();
+            let ret = from_glib(soup_sys::soup_message_get_https_status(self.as_ref().to_glib_none().0, &mut certificate, errors.as_mut_ptr()));
+            let errors = errors.assume_init();
+            if ret { Some((from_glib_none(certificate), from_glib(errors))) } else { None }
+        }
+    }
 
     #[cfg(any(feature = "v2_44", feature = "dox"))]
     fn get_priority(&self) -> MessagePriority {
@@ -369,9 +388,11 @@ impl<O: IsA<Message>> MessageExt for O {
         }
     }
 
-    //fn set_flags(&self, flags: /*Ignored*/MessageFlags) {
-    //    unsafe { TODO: call soup_sys:soup_message_set_flags() }
-    //}
+    fn set_flags(&self, flags: MessageFlags) {
+        unsafe {
+            soup_sys::soup_message_set_flags(self.as_ref().to_glib_none().0, flags.to_glib());
+        }
+    }
 
     fn set_http_version(&self, version: HTTPVersion) {
         unsafe {
@@ -501,13 +522,13 @@ impl<O: IsA<Message>> MessageExt for O {
         }
     }
 
-    //fn get_property_request_body(&self) -> /*Ignored*/Option<MessageBody> {
-    //    unsafe {
-    //        let mut value = Value::from_type(</*Unknown type*/ as StaticType>::static_type());
-    //        gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"request-body\0".as_ptr() as *const _, value.to_glib_none_mut().0);
-    //        value.get().expect("Return Value for property `request-body` getter")
-    //    }
-    //}
+    fn get_property_request_body(&self) -> Option<MessageBody> {
+        unsafe {
+            let mut value = Value::from_type(<MessageBody as StaticType>::static_type());
+            gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"request-body\0".as_ptr() as *const _, value.to_glib_none_mut().0);
+            value.get().expect("Return Value for property `request-body` getter")
+        }
+    }
 
     #[cfg(any(feature = "v2_46", feature = "dox"))]
     fn get_property_request_body_data(&self) -> Option<glib::Bytes> {
@@ -518,21 +539,21 @@ impl<O: IsA<Message>> MessageExt for O {
         }
     }
 
-    //fn get_property_request_headers(&self) -> /*Ignored*/Option<MessageHeaders> {
-    //    unsafe {
-    //        let mut value = Value::from_type(</*Unknown type*/ as StaticType>::static_type());
-    //        gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"request-headers\0".as_ptr() as *const _, value.to_glib_none_mut().0);
-    //        value.get().expect("Return Value for property `request-headers` getter")
-    //    }
-    //}
+    fn get_property_request_headers(&self) -> Option<MessageHeaders> {
+        unsafe {
+            let mut value = Value::from_type(<MessageHeaders as StaticType>::static_type());
+            gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"request-headers\0".as_ptr() as *const _, value.to_glib_none_mut().0);
+            value.get().expect("Return Value for property `request-headers` getter")
+        }
+    }
 
-    //fn get_property_response_body(&self) -> /*Ignored*/Option<MessageBody> {
-    //    unsafe {
-    //        let mut value = Value::from_type(</*Unknown type*/ as StaticType>::static_type());
-    //        gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"response-body\0".as_ptr() as *const _, value.to_glib_none_mut().0);
-    //        value.get().expect("Return Value for property `response-body` getter")
-    //    }
-    //}
+    fn get_property_response_body(&self) -> Option<MessageBody> {
+        unsafe {
+            let mut value = Value::from_type(<MessageBody as StaticType>::static_type());
+            gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"response-body\0".as_ptr() as *const _, value.to_glib_none_mut().0);
+            value.get().expect("Return Value for property `response-body` getter")
+        }
+    }
 
     #[cfg(any(feature = "v2_46", feature = "dox"))]
     fn get_property_response_body_data(&self) -> Option<glib::Bytes> {
@@ -543,13 +564,13 @@ impl<O: IsA<Message>> MessageExt for O {
         }
     }
 
-    //fn get_property_response_headers(&self) -> /*Ignored*/Option<MessageHeaders> {
-    //    unsafe {
-    //        let mut value = Value::from_type(</*Unknown type*/ as StaticType>::static_type());
-    //        gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"response-headers\0".as_ptr() as *const _, value.to_glib_none_mut().0);
-    //        value.get().expect("Return Value for property `response-headers` getter")
-    //    }
-    //}
+    fn get_property_response_headers(&self) -> Option<MessageHeaders> {
+        unsafe {
+            let mut value = Value::from_type(<MessageHeaders as StaticType>::static_type());
+            gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"response-headers\0".as_ptr() as *const _, value.to_glib_none_mut().0);
+            value.get().expect("Return Value for property `response-headers` getter")
+        }
+    }
 
     fn get_property_server_side(&self) -> bool {
         unsafe {
@@ -573,37 +594,37 @@ impl<O: IsA<Message>> MessageExt for O {
         }
     }
 
-    //#[cfg(any(feature = "v2_34", feature = "dox"))]
-    //fn get_property_tls_certificate(&self) -> /*Ignored*/Option<gio::TlsCertificate> {
-    //    unsafe {
-    //        let mut value = Value::from_type(</*Unknown type*/ as StaticType>::static_type());
-    //        gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"tls-certificate\0".as_ptr() as *const _, value.to_glib_none_mut().0);
-    //        value.get().expect("Return Value for property `tls-certificate` getter")
-    //    }
-    //}
+    #[cfg(any(feature = "v2_34", feature = "dox"))]
+    fn get_property_tls_certificate(&self) -> Option<gio::TlsCertificate> {
+        unsafe {
+            let mut value = Value::from_type(<gio::TlsCertificate as StaticType>::static_type());
+            gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"tls-certificate\0".as_ptr() as *const _, value.to_glib_none_mut().0);
+            value.get().expect("Return Value for property `tls-certificate` getter")
+        }
+    }
 
-    //#[cfg(any(feature = "v2_34", feature = "dox"))]
-    //fn set_property_tls_certificate<P: IsA</*Ignored*/gio::TlsCertificate> + SetValueOptional>(&self, tls_certificate: Option<&P>) {
-    //    unsafe {
-    //        gobject_sys::g_object_set_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"tls-certificate\0".as_ptr() as *const _, Value::from(tls_certificate).to_glib_none().0);
-    //    }
-    //}
+    #[cfg(any(feature = "v2_34", feature = "dox"))]
+    fn set_property_tls_certificate<P: IsA<gio::TlsCertificate> + SetValueOptional>(&self, tls_certificate: Option<&P>) {
+        unsafe {
+            gobject_sys::g_object_set_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"tls-certificate\0".as_ptr() as *const _, Value::from(tls_certificate).to_glib_none().0);
+        }
+    }
 
-    //#[cfg(any(feature = "v2_34", feature = "dox"))]
-    //fn get_property_tls_errors(&self) -> /*Ignored*/gio::TlsCertificateFlags {
-    //    unsafe {
-    //        let mut value = Value::from_type(</*Unknown type*/ as StaticType>::static_type());
-    //        gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"tls-errors\0".as_ptr() as *const _, value.to_glib_none_mut().0);
-    //        value.get().expect("Return Value for property `tls-errors` getter").unwrap()
-    //    }
-    //}
+    #[cfg(any(feature = "v2_34", feature = "dox"))]
+    fn get_property_tls_errors(&self) -> gio::TlsCertificateFlags {
+        unsafe {
+            let mut value = Value::from_type(<gio::TlsCertificateFlags as StaticType>::static_type());
+            gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"tls-errors\0".as_ptr() as *const _, value.to_glib_none_mut().0);
+            value.get().expect("Return Value for property `tls-errors` getter").unwrap()
+        }
+    }
 
-    //#[cfg(any(feature = "v2_34", feature = "dox"))]
-    //fn set_property_tls_errors(&self, tls_errors: /*Ignored*/gio::TlsCertificateFlags) {
-    //    unsafe {
-    //        gobject_sys::g_object_set_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"tls-errors\0".as_ptr() as *const _, Value::from(&tls_errors).to_glib_none().0);
-    //    }
-    //}
+    #[cfg(any(feature = "v2_34", feature = "dox"))]
+    fn set_property_tls_errors(&self, tls_errors: gio::TlsCertificateFlags) {
+        unsafe {
+            gobject_sys::g_object_set_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"tls-errors\0".as_ptr() as *const _, Value::from(&tls_errors).to_glib_none().0);
+        }
+    }
 
     //#[cfg(any(feature = "v2_28", feature = "dox"))]
     //fn connect_content_sniffed<Unsupported or ignored types>(&self, f: F) -> SignalHandlerId {

@@ -3,7 +3,6 @@
 // DO NOT EDIT
 
 use gio;
-use glib;
 use glib::object::Cast;
 use glib::object::IsA;
 use glib::signal::connect_raw;
@@ -16,11 +15,8 @@ use gobject_sys;
 use soup_sys;
 use std::boxed::Box as Box_;
 use std::fmt;
-use std::mem;
 use std::mem::transmute;
-use std::ptr;
 use Address;
-use SocketIOStatus;
 
 glib_wrapper! {
     pub struct Socket(Object<soup_sys::SoupSocket, soup_sys::SoupSocketClass, SocketClass>);
@@ -57,15 +53,11 @@ pub trait SocketExt: 'static {
 
     fn listen(&self) -> bool;
 
-    fn read<P: IsA<gio::Cancellable>>(&self, buffer: &[u8], cancellable: Option<&P>) -> Result<(SocketIOStatus, usize), glib::Error>;
-
     //fn read_until<P: IsA<gio::Cancellable>>(&self, buffer: &[u8], boundary: /*Unimplemented*/Option<Fundamental: Pointer>, boundary_len: usize, got_boundary: bool, cancellable: Option<&P>) -> Result<(SocketIOStatus, usize), glib::Error>;
 
     fn start_proxy_ssl<P: IsA<gio::Cancellable>>(&self, ssl_host: &str, cancellable: Option<&P>) -> bool;
 
     fn start_ssl<P: IsA<gio::Cancellable>>(&self, cancellable: Option<&P>) -> bool;
-
-    fn write<P: IsA<gio::Cancellable>>(&self, buffer: &[u8], cancellable: Option<&P>) -> Result<(SocketIOStatus, usize), glib::Error>;
 
     //fn get_property_async_context(&self) -> /*Unimplemented*/Fundamental: Pointer;
 
@@ -91,9 +83,9 @@ pub trait SocketExt: 'static {
 
     fn set_property_timeout(&self, timeout: u32);
 
-    //fn get_property_tls_certificate(&self) -> /*Ignored*/Option<gio::TlsCertificate>;
+    fn get_property_tls_certificate(&self) -> Option<gio::TlsCertificate>;
 
-    //fn get_property_tls_errors(&self) -> /*Ignored*/gio::TlsCertificateFlags;
+    fn get_property_tls_errors(&self) -> gio::TlsCertificateFlags;
 
     fn get_property_trusted_certificate(&self) -> bool;
 
@@ -191,17 +183,6 @@ impl<O: IsA<Socket>> SocketExt for O {
         }
     }
 
-    fn read<P: IsA<gio::Cancellable>>(&self, buffer: &[u8], cancellable: Option<&P>) -> Result<(SocketIOStatus, usize), glib::Error> {
-        let len = buffer.len() as usize;
-        unsafe {
-            let mut nread = mem::MaybeUninit::uninit();
-            let mut error = ptr::null_mut();
-            let ret = soup_sys::soup_socket_read(self.as_ref().to_glib_none().0, buffer.to_glib_none().0, len, nread.as_mut_ptr(), cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
-            let nread = nread.assume_init();
-            if error.is_null() { Ok((from_glib(ret), nread)) } else { Err(from_glib_full(error)) }
-        }
-    }
-
     //fn read_until<P: IsA<gio::Cancellable>>(&self, buffer: &[u8], boundary: /*Unimplemented*/Option<Fundamental: Pointer>, boundary_len: usize, got_boundary: bool, cancellable: Option<&P>) -> Result<(SocketIOStatus, usize), glib::Error> {
     //    unsafe { TODO: call soup_sys:soup_socket_read_until() }
     //}
@@ -215,17 +196,6 @@ impl<O: IsA<Socket>> SocketExt for O {
     fn start_ssl<P: IsA<gio::Cancellable>>(&self, cancellable: Option<&P>) -> bool {
         unsafe {
             from_glib(soup_sys::soup_socket_start_ssl(self.as_ref().to_glib_none().0, cancellable.map(|p| p.as_ref()).to_glib_none().0))
-        }
-    }
-
-    fn write<P: IsA<gio::Cancellable>>(&self, buffer: &[u8], cancellable: Option<&P>) -> Result<(SocketIOStatus, usize), glib::Error> {
-        let len = buffer.len() as usize;
-        unsafe {
-            let mut nwrote = mem::MaybeUninit::uninit();
-            let mut error = ptr::null_mut();
-            let ret = soup_sys::soup_socket_write(self.as_ref().to_glib_none().0, buffer.to_glib_none().0, len, nwrote.as_mut_ptr(), cancellable.map(|p| p.as_ref()).to_glib_none().0, &mut error);
-            let nwrote = nwrote.assume_init();
-            if error.is_null() { Ok((from_glib(ret), nwrote)) } else { Err(from_glib_full(error)) }
         }
     }
 
@@ -317,21 +287,21 @@ impl<O: IsA<Socket>> SocketExt for O {
         }
     }
 
-    //fn get_property_tls_certificate(&self) -> /*Ignored*/Option<gio::TlsCertificate> {
-    //    unsafe {
-    //        let mut value = Value::from_type(</*Unknown type*/ as StaticType>::static_type());
-    //        gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"tls-certificate\0".as_ptr() as *const _, value.to_glib_none_mut().0);
-    //        value.get().expect("Return Value for property `tls-certificate` getter")
-    //    }
-    //}
+    fn get_property_tls_certificate(&self) -> Option<gio::TlsCertificate> {
+        unsafe {
+            let mut value = Value::from_type(<gio::TlsCertificate as StaticType>::static_type());
+            gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"tls-certificate\0".as_ptr() as *const _, value.to_glib_none_mut().0);
+            value.get().expect("Return Value for property `tls-certificate` getter")
+        }
+    }
 
-    //fn get_property_tls_errors(&self) -> /*Ignored*/gio::TlsCertificateFlags {
-    //    unsafe {
-    //        let mut value = Value::from_type(</*Unknown type*/ as StaticType>::static_type());
-    //        gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"tls-errors\0".as_ptr() as *const _, value.to_glib_none_mut().0);
-    //        value.get().expect("Return Value for property `tls-errors` getter").unwrap()
-    //    }
-    //}
+    fn get_property_tls_errors(&self) -> gio::TlsCertificateFlags {
+        unsafe {
+            let mut value = Value::from_type(<gio::TlsCertificateFlags as StaticType>::static_type());
+            gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"tls-errors\0".as_ptr() as *const _, value.to_glib_none_mut().0);
+            value.get().expect("Return Value for property `tls-errors` getter").unwrap()
+        }
+    }
 
     fn get_property_trusted_certificate(&self) -> bool {
         unsafe {

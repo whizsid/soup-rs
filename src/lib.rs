@@ -1,7 +1,18 @@
+
+#![allow(unused_imports)]
+
+#[macro_use]
+extern crate bitflags;
+
+extern crate gio;
+extern crate gio_sys;
 #[macro_use]
 extern crate glib;
 extern crate glib_sys;
 extern crate gobject_sys;
+extern crate gtk;
+extern crate gtk_sys;
+extern crate soup_sys;
 
 macro_rules! assert_initialized_main_thread {
     () => (
@@ -20,4 +31,8 @@ macro_rules! skip_assert_initialized {
     () => ()
 }
 
-pub mod auto;
+mod auto;
+
+pub use glib::Error;
+
+pub use auto::*;

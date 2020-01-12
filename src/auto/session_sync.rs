@@ -2,14 +2,12 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use glib::object::Cast;
 use glib::translate::*;
 use soup_sys;
 use std::fmt;
-use Session;
 
 glib_wrapper! {
-    pub struct SessionSync(Object<soup_sys::SoupSessionSync, soup_sys::SoupSessionSyncClass, SessionSyncClass>) @extends Session;
+    pub struct SessionSync(Object<soup_sys::SoupSessionSync, soup_sys::SoupSessionSyncClass, SessionSyncClass>);
 
     match fn {
         get_type => || soup_sys::soup_session_sync_get_type(),
@@ -17,12 +15,9 @@ glib_wrapper! {
 }
 
 impl SessionSync {
-    pub fn new() -> SessionSync {
-        assert_initialized_main_thread!();
-        unsafe {
-            Session::from_glib_full(soup_sys::soup_session_sync_new()).unsafe_cast()
-        }
-    }
+    //pub fn new() -> SessionSync {
+    //    unsafe { TODO: call soup_sys:soup_session_sync_new() }
+    //}
 
     //pub fn new_with_options(optname1: &str, : /*Unknown conversion*//*Unimplemented*/Fundamental: VarArgs) -> SessionSync {
     //    unsafe { TODO: call soup_sys:soup_session_sync_new_with_options() }

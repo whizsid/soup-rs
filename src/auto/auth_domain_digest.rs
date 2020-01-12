@@ -16,11 +16,9 @@ use soup_sys;
 use std::boxed::Box as Box_;
 use std::fmt;
 use std::mem::transmute;
-use AuthDomain;
-use Message;
 
 glib_wrapper! {
-    pub struct AuthDomainDigest(Object<soup_sys::SoupAuthDomainDigest, soup_sys::SoupAuthDomainDigestClass, AuthDomainDigestClass>) @extends AuthDomain;
+    pub struct AuthDomainDigest(Object<soup_sys::SoupAuthDomainDigest, soup_sys::SoupAuthDomainDigestClass, AuthDomainDigestClass>);
 
     match fn {
         get_type => || soup_sys::soup_auth_domain_digest_get_type(),
@@ -43,9 +41,9 @@ impl AuthDomainDigest {
 pub const NONE_AUTH_DOMAIN_DIGEST: Option<&AuthDomainDigest> = None;
 
 pub trait AuthDomainDigestExt: 'static {
-    fn set_auth_callback<P: Fn(&AuthDomainDigest, &Message, &str) -> Option<String> + 'static>(&self, callback: P);
-
     fn get_property_auth_callback(&self) -> Fn(&AuthDomainDigest, &Message, &str) -> Option<String> + 'static;
+
+    fn set_property_auth_callback(&self, auth_callback: Fn(&AuthDomainDigest, &Message, &str) -> Option<String> + 'static);
 
     //fn get_property_auth_data(&self) -> /*Unimplemented*/Fundamental: Pointer;
 
@@ -57,32 +55,17 @@ pub trait AuthDomainDigestExt: 'static {
 }
 
 impl<O: IsA<AuthDomainDigest>> AuthDomainDigestExt for O {
-    fn set_auth_callback<P: Fn(&AuthDomainDigest, &Message, &str) -> Option<String> + 'static>(&self, callback: P) {
-        let callback_data: Box_<P> = Box_::new(callback);
-        unsafe extern "C" fn callback_func<P: Fn(&AuthDomainDigest, &Message, &str) -> Option<String> + 'static>(domain: *mut soup_sys::SoupAuthDomainDigest, msg: *mut soup_sys::SoupMessage, username: *const libc::c_char, user_data: glib_sys::gpointer) -> *mut libc::c_char {
-            let domain = from_glib_borrow(domain);
-            let msg = from_glib_borrow(msg);
-            let username: GString = from_glib_borrow(username);
-            let callback: &P = &*(user_data as *mut _);
-            let res = (*callback)(&domain, &msg, username.as_str());
-            res.to_glib_full()
-        }
-        let callback = Some(callback_func::<P> as _);
-        unsafe extern "C" fn dnotify_func<P: Fn(&AuthDomainDigest, &Message, &str) -> Option<String> + 'static>(data: glib_sys::gpointer) {
-            let _callback: Box_<P> = Box_::from_raw(data as *mut _);
-        }
-        let destroy_call3 = Some(dnotify_func::<P> as _);
-        let super_callback0: Box_<P> = callback_data;
-        unsafe {
-            soup_sys::soup_auth_domain_digest_set_auth_callback(self.as_ref().to_glib_none().0, callback, Box_::into_raw(super_callback0) as *mut _, destroy_call3);
-        }
-    }
-
     fn get_property_auth_callback(&self) -> Fn(&AuthDomainDigest, &Message, &str) -> Option<String> + 'static {
         unsafe {
             let mut value = Value::from_type(<Fn(&AuthDomainDigest, &Message, &str) -> Option<String> + 'static as StaticType>::static_type());
             gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"auth-callback\0".as_ptr() as *const _, value.to_glib_none_mut().0);
             value.get().expect("Return Value for property `auth-callback` getter").unwrap()
+        }
+    }
+
+    fn set_property_auth_callback(&self, auth_callback: Fn(&AuthDomainDigest, &Message, &str) -> Option<String> + 'static) {
+        unsafe {
+            gobject_sys::g_object_set_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"auth-callback\0".as_ptr() as *const _, Value::from(&auth_callback).to_glib_none().0);
         }
     }
 

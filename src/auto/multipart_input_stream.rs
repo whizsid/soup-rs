@@ -15,6 +15,8 @@ use std::fmt;
 #[cfg(any(feature = "v2_40", feature = "dox"))]
 use std::ptr;
 use Message;
+#[cfg(any(feature = "v2_40", feature = "dox"))]
+use MessageHeaders;
 
 glib_wrapper! {
     pub struct MultipartInputStream(Object<soup_sys::SoupMultipartInputStream, soup_sys::SoupMultipartInputStreamClass, MultipartInputStreamClass>) @extends gio::InputStream;
@@ -37,8 +39,8 @@ impl MultipartInputStream {
 pub const NONE_MULTIPART_INPUT_STREAM: Option<&MultipartInputStream> = None;
 
 pub trait MultipartInputStreamExt: 'static {
-    //#[cfg(any(feature = "v2_40", feature = "dox"))]
-    //fn get_headers(&self) -> /*Ignored*/Option<MessageHeaders>;
+    #[cfg(any(feature = "v2_40", feature = "dox"))]
+    fn get_headers(&self) -> Option<MessageHeaders>;
 
     #[cfg(any(feature = "v2_40", feature = "dox"))]
     fn next_part<P: IsA<gio::Cancellable>>(&self, cancellable: Option<&P>) -> Result<Option<gio::InputStream>, glib::Error>;
@@ -54,10 +56,12 @@ pub trait MultipartInputStreamExt: 'static {
 }
 
 impl<O: IsA<MultipartInputStream>> MultipartInputStreamExt for O {
-    //#[cfg(any(feature = "v2_40", feature = "dox"))]
-    //fn get_headers(&self) -> /*Ignored*/Option<MessageHeaders> {
-    //    unsafe { TODO: call soup_sys:soup_multipart_input_stream_get_headers() }
-    //}
+    #[cfg(any(feature = "v2_40", feature = "dox"))]
+    fn get_headers(&self) -> Option<MessageHeaders> {
+        unsafe {
+            from_glib_none(soup_sys::soup_multipart_input_stream_get_headers(self.as_ref().to_glib_none().0))
+        }
+    }
 
     #[cfg(any(feature = "v2_40", feature = "dox"))]
     fn next_part<P: IsA<gio::Cancellable>>(&self, cancellable: Option<&P>) -> Result<Option<gio::InputStream>, glib::Error> {

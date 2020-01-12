@@ -25,8 +25,6 @@ use std::pin::Pin;
 #[cfg(any(feature = "v2_42", feature = "dox"))]
 use std::ptr;
 #[cfg(any(feature = "v2_42", feature = "dox"))]
-use Session;
-#[cfg(any(feature = "v2_42", feature = "dox"))]
 use URI;
 
 glib_wrapper! {
@@ -46,8 +44,8 @@ pub trait RequestExt: 'static {
     #[cfg(any(feature = "v2_42", feature = "dox"))]
     fn get_content_type(&self) -> Option<GString>;
 
-    #[cfg(any(feature = "v2_42", feature = "dox"))]
-    fn get_session(&self) -> Option<Session>;
+    //#[cfg(any(feature = "v2_42", feature = "dox"))]
+    //fn get_session(&self) -> /*Ignored*/Option<Session>;
 
     #[cfg(any(feature = "v2_42", feature = "dox"))]
     fn get_uri(&self) -> Option<URI>;
@@ -78,12 +76,10 @@ impl<O: IsA<Request>> RequestExt for O {
         }
     }
 
-    #[cfg(any(feature = "v2_42", feature = "dox"))]
-    fn get_session(&self) -> Option<Session> {
-        unsafe {
-            from_glib_none(soup_sys::soup_request_get_session(self.as_ref().to_glib_none().0))
-        }
-    }
+    //#[cfg(any(feature = "v2_42", feature = "dox"))]
+    //fn get_session(&self) -> /*Ignored*/Option<Session> {
+    //    unsafe { TODO: call soup_sys:soup_request_get_session() }
+    //}
 
     #[cfg(any(feature = "v2_42", feature = "dox"))]
     fn get_uri(&self) -> Option<URI> {

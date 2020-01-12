@@ -43,21 +43,21 @@ pub trait AuthDomainExt: 'static {
 
     fn remove_path(&self, path: &str);
 
-    fn set_filter<P: Fn(&AuthDomain, &Message) -> bool + 'static>(&self, filter: P);
-
-    fn set_generic_auth_callback<P: Fn(&AuthDomain, &Message, &str) -> bool + 'static>(&self, auth_callback: P);
-
     fn try_generic_auth_callback<P: IsA<Message>>(&self, msg: &P, username: &str) -> bool;
 
     fn set_property_add_path(&self, add_path: Option<&str>);
 
     fn get_property_filter(&self) -> Fn(&AuthDomain, &Message) -> bool + 'static;
 
+    fn set_property_filter(&self, filter: Fn(&AuthDomain, &Message) -> bool + 'static);
+
     //fn get_property_filter_data(&self) -> /*Unimplemented*/Fundamental: Pointer;
 
     //fn set_property_filter_data(&self, filter_data: /*Unimplemented*/Fundamental: Pointer);
 
     fn get_property_generic_auth_callback(&self) -> Fn(&AuthDomain, &Message, &str) -> bool + 'static;
+
+    fn set_property_generic_auth_callback(&self, generic_auth_callback: Fn(&AuthDomain, &Message, &str) -> bool + 'static);
 
     //fn get_property_generic_auth_data(&self) -> /*Unimplemented*/Fundamental: Pointer;
 
@@ -123,47 +123,6 @@ impl<O: IsA<AuthDomain>> AuthDomainExt for O {
         }
     }
 
-    fn set_filter<P: Fn(&AuthDomain, &Message) -> bool + 'static>(&self, filter: P) {
-        let filter_data: Box_<P> = Box_::new(filter);
-        unsafe extern "C" fn filter_func<P: Fn(&AuthDomain, &Message) -> bool + 'static>(domain: *mut soup_sys::SoupAuthDomain, msg: *mut soup_sys::SoupMessage, user_data: glib_sys::gpointer) -> glib_sys::gboolean {
-            let domain = from_glib_borrow(domain);
-            let msg = from_glib_borrow(msg);
-            let callback: &P = &*(user_data as *mut _);
-            let res = (*callback)(&domain, &msg);
-            res.to_glib()
-        }
-        let filter = Some(filter_func::<P> as _);
-        unsafe extern "C" fn dnotify_func<P: Fn(&AuthDomain, &Message) -> bool + 'static>(data: glib_sys::gpointer) {
-            let _callback: Box_<P> = Box_::from_raw(data as *mut _);
-        }
-        let destroy_call3 = Some(dnotify_func::<P> as _);
-        let super_callback0: Box_<P> = filter_data;
-        unsafe {
-            soup_sys::soup_auth_domain_set_filter(self.as_ref().to_glib_none().0, filter, Box_::into_raw(super_callback0) as *mut _, destroy_call3);
-        }
-    }
-
-    fn set_generic_auth_callback<P: Fn(&AuthDomain, &Message, &str) -> bool + 'static>(&self, auth_callback: P) {
-        let auth_callback_data: Box_<P> = Box_::new(auth_callback);
-        unsafe extern "C" fn auth_callback_func<P: Fn(&AuthDomain, &Message, &str) -> bool + 'static>(domain: *mut soup_sys::SoupAuthDomain, msg: *mut soup_sys::SoupMessage, username: *const libc::c_char, user_data: glib_sys::gpointer) -> glib_sys::gboolean {
-            let domain = from_glib_borrow(domain);
-            let msg = from_glib_borrow(msg);
-            let username: GString = from_glib_borrow(username);
-            let callback: &P = &*(user_data as *mut _);
-            let res = (*callback)(&domain, &msg, username.as_str());
-            res.to_glib()
-        }
-        let auth_callback = Some(auth_callback_func::<P> as _);
-        unsafe extern "C" fn dnotify_func<P: Fn(&AuthDomain, &Message, &str) -> bool + 'static>(data: glib_sys::gpointer) {
-            let _callback: Box_<P> = Box_::from_raw(data as *mut _);
-        }
-        let destroy_call3 = Some(dnotify_func::<P> as _);
-        let super_callback0: Box_<P> = auth_callback_data;
-        unsafe {
-            soup_sys::soup_auth_domain_set_generic_auth_callback(self.as_ref().to_glib_none().0, auth_callback, Box_::into_raw(super_callback0) as *mut _, destroy_call3);
-        }
-    }
-
     fn try_generic_auth_callback<P: IsA<Message>>(&self, msg: &P, username: &str) -> bool {
         unsafe {
             from_glib(soup_sys::soup_auth_domain_try_generic_auth_callback(self.as_ref().to_glib_none().0, msg.as_ref().to_glib_none().0, username.to_glib_none().0))
@@ -181,6 +140,12 @@ impl<O: IsA<AuthDomain>> AuthDomainExt for O {
             let mut value = Value::from_type(<Fn(&AuthDomain, &Message) -> bool + 'static as StaticType>::static_type());
             gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"filter\0".as_ptr() as *const _, value.to_glib_none_mut().0);
             value.get().expect("Return Value for property `filter` getter").unwrap()
+        }
+    }
+
+    fn set_property_filter(&self, filter: Fn(&AuthDomain, &Message) -> bool + 'static) {
+        unsafe {
+            gobject_sys::g_object_set_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"filter\0".as_ptr() as *const _, Value::from(&filter).to_glib_none().0);
         }
     }
 
@@ -203,6 +168,12 @@ impl<O: IsA<AuthDomain>> AuthDomainExt for O {
             let mut value = Value::from_type(<Fn(&AuthDomain, &Message, &str) -> bool + 'static as StaticType>::static_type());
             gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"generic-auth-callback\0".as_ptr() as *const _, value.to_glib_none_mut().0);
             value.get().expect("Return Value for property `generic-auth-callback` getter").unwrap()
+        }
+    }
+
+    fn set_property_generic_auth_callback(&self, generic_auth_callback: Fn(&AuthDomain, &Message, &str) -> bool + 'static) {
+        unsafe {
+            gobject_sys::g_object_set_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"generic-auth-callback\0".as_ptr() as *const _, Value::from(&generic_auth_callback).to_glib_none().0);
         }
     }
 

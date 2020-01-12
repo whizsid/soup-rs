@@ -2,7 +2,6 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-use glib;
 #[cfg(any(feature = "v2_56", feature = "dox"))]
 use glib::object::Cast;
 use glib::object::IsA;
@@ -11,7 +10,6 @@ use glib::signal::connect_raw;
 #[cfg(any(feature = "v2_56", feature = "dox"))]
 use glib::signal::SignalHandlerId;
 use glib::translate::*;
-use glib::GString;
 #[cfg(any(feature = "v2_56", feature = "dox"))]
 use glib::StaticType;
 #[cfg(any(feature = "v2_56", feature = "dox"))]
@@ -27,7 +25,6 @@ use std::fmt;
 use std::mem::transmute;
 use LoggerLogLevel;
 use Message;
-use Session;
 
 glib_wrapper! {
     pub struct Logger(Object<soup_sys::SoupLogger, soup_sys::SoupLoggerClass, LoggerClass>);
@@ -49,11 +46,9 @@ impl Logger {
 pub const NONE_LOGGER: Option<&Logger> = None;
 
 pub trait LoggerExt: 'static {
-    fn attach<P: IsA<Session>>(&self, session: &P);
+    //fn attach(&self, session: /*Ignored*/&Session);
 
-    fn detach<P: IsA<Session>>(&self, session: &P);
-
-    fn set_printer<P: Fn(&Logger, &LoggerLogLevel, glib::Char, &str) + 'static>(&self, printer: P);
+    //fn detach(&self, session: /*Ignored*/&Session);
 
     fn set_request_filter<P: Fn(&Logger, &Message) -> LoggerLogLevel + 'static>(&self, request_filter: P);
 
@@ -79,37 +74,13 @@ pub trait LoggerExt: 'static {
 }
 
 impl<O: IsA<Logger>> LoggerExt for O {
-    fn attach<P: IsA<Session>>(&self, session: &P) {
-        unsafe {
-            soup_sys::soup_logger_attach(self.as_ref().to_glib_none().0, session.as_ref().to_glib_none().0);
-        }
-    }
+    //fn attach(&self, session: /*Ignored*/&Session) {
+    //    unsafe { TODO: call soup_sys:soup_logger_attach() }
+    //}
 
-    fn detach<P: IsA<Session>>(&self, session: &P) {
-        unsafe {
-            soup_sys::soup_logger_detach(self.as_ref().to_glib_none().0, session.as_ref().to_glib_none().0);
-        }
-    }
-
-    fn set_printer<P: Fn(&Logger, &LoggerLogLevel, glib::Char, &str) + 'static>(&self, printer: P) {
-        let printer_data: Box_<P> = Box_::new(printer);
-        unsafe extern "C" fn printer_func<P: Fn(&Logger, &LoggerLogLevel, glib::Char, &str) + 'static>(logger: *mut soup_sys::SoupLogger, level: soup_sys::SoupLoggerLogLevel, direction: libc::c_char, data: *const libc::c_char, user_data: glib_sys::gpointer) {
-            let logger = from_glib_borrow(logger);
-            let level = from_glib_borrow(level);
-            let data: GString = from_glib_borrow(data);
-            let callback: &P = &*(user_data as *mut _);
-            (*callback)(&logger, &level, direction, data.as_str());
-        }
-        let printer = Some(printer_func::<P> as _);
-        unsafe extern "C" fn destroy_func<P: Fn(&Logger, &LoggerLogLevel, glib::Char, &str) + 'static>(data: glib_sys::gpointer) {
-            let _callback: Box_<P> = Box_::from_raw(data as *mut _);
-        }
-        let destroy_call3 = Some(destroy_func::<P> as _);
-        let super_callback0: Box_<P> = printer_data;
-        unsafe {
-            soup_sys::soup_logger_set_printer(self.as_ref().to_glib_none().0, printer, Box_::into_raw(super_callback0) as *mut _, destroy_call3);
-        }
-    }
+    //fn detach(&self, session: /*Ignored*/&Session) {
+    //    unsafe { TODO: call soup_sys:soup_logger_detach() }
+    //}
 
     fn set_request_filter<P: Fn(&Logger, &Message) -> LoggerLogLevel + 'static>(&self, request_filter: P) {
         let request_filter_data: Box_<P> = Box_::new(request_filter);

@@ -16,9 +16,6 @@ generate = [
 	"Soup.Auth",
 	"Soup.AuthBasic",
 	"Soup.AuthDigest",
-	"Soup.AuthDomain",
-	"Soup.AuthDomainBasic",
-	"Soup.AuthDomainDigest",
 	"Soup.AuthManager",
 	"Soup.AuthNTLM",
 	"Soup.AuthNegotiate",
@@ -30,24 +27,14 @@ generate = [
 	"Soup.CookieJarText",
 	"Soup.HSTSEnforcer",
 	"Soup.HSTSEnforcerDB",
-	"Soup.Logger",
 	"Soup.Message",
 	"Soup.MultipartInputStream",
 	"Soup.ProxyResolverDefault",
 	"Soup.Request",
-	"Soup.RequestData",
-	"Soup.RequestFile",
 	"Soup.RequestHTTP",
 	"Soup.Requester",
 	"Soup.Server",
-	"Soup.Session",
-	"Soup.SessionAsync",
-	"Soup.SessionSync",
-	"Soup.Socket",
 	"Soup.WebsocketConnection",
-	"Soup.WebsocketExtension",
-	"Soup.WebsocketExtensionDeflate",
-	"Soup.WebsocketExtensionManager",
 	"Soup.AddressFamily",
 	"Soup.CacheResponse",
 	"Soup.CacheType",
@@ -59,6 +46,7 @@ generate = [
 	"Soup.KnownStatusCode",
 	"Soup.LoggerLogLevel",
 	"Soup.MemoryUse",
+	"Soup.MessageHeaders",
 	"Soup.MessageHeadersType",
 	"Soup.MessagePriority",
 	"Soup.RequestError",
@@ -73,13 +61,18 @@ generate = [
 	"Soup.WebsocketState",
 	"Soup.XMLRPCError",
 	"Soup.XMLRPCFault",
-	"Soup.URI"
+	"Soup.Cacheability",
+	"Soup.Expectation",
+	"Soup.MessageFlags",
+	"Soup.ServerListenOptions"
 ]
 
 manual = [
 	"Gio.InputStream",
 	"Gio.Cancellable",
 	"Gio.ProxyResolver",
+	"Gio.TlsCertificate",
+	"Gio.TlsCertificateFlags",
 	"GLib.Bytes",
 	"GLib.Data",
 	"GLib.DestroyNotify",
@@ -100,3 +93,44 @@ manual = [
 	"GLib.Variant",
 	"GObject.Object"
 ]
+
+[[object]]
+name="Soup.Socket"
+status = "generate"
+    [[object.function]]
+    name = "write"
+    ignore = true
+	[[object.function]]
+    name = "read"
+    ignore = true
+
+[[object]]
+name="Soup.Logger"
+status = "generate"
+    [[object.function]]
+    name = "set_printer"
+    ignore = true
+
+[[object]]
+name="Soup.RequestData"
+status = "generate"
+version = "v2_42"
+
+[[object]]
+name="Soup.RequestFile"
+status = "generate"
+version = "v2_42"
+
+[[object]]
+name="Soup.MessageBody"
+status = "generate"
+    [[object.function]]
+    name = "append"
+    ignore = true
+
+[[object]]
+name="Soup.URI"
+status = "generate"
+    [[object.function]]
+    name = "equal"
+	ignore= true

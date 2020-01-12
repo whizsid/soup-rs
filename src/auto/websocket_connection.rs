@@ -30,8 +30,6 @@ use URI;
 use WebsocketConnectionType;
 #[cfg(any(feature = "v2_68", feature = "dox"))]
 use WebsocketDataType;
-#[cfg(any(feature = "v2_68", feature = "dox"))]
-use WebsocketExtension;
 #[cfg(any(feature = "v2_50", feature = "dox"))]
 use WebsocketState;
 
@@ -50,7 +48,7 @@ impl WebsocketConnection {
     //}
 
     //#[cfg(any(feature = "v2_68", feature = "dox"))]
-    //pub fn new_with_extensions(stream: /*Ignored*/&gio::IOStream, uri: &mut URI, type_: WebsocketConnectionType, origin: Option<&str>, protocol: Option<&str>, extensions: &[WebsocketExtension]) -> WebsocketConnection {
+    //pub fn new_with_extensions(stream: /*Ignored*/&gio::IOStream, uri: &mut URI, type_: WebsocketConnectionType, origin: Option<&str>, protocol: Option<&str>, extensions: /*Ignored*/&[WebsocketExtension]) -> WebsocketConnection {
     //    unsafe { TODO: call soup_sys:soup_websocket_connection_new_with_extensions() }
     //}
 }
@@ -70,8 +68,8 @@ pub trait WebsocketConnectionExt: 'static {
     #[cfg(any(feature = "v2_50", feature = "dox"))]
     fn get_connection_type(&self) -> WebsocketConnectionType;
 
-    #[cfg(any(feature = "v2_68", feature = "dox"))]
-    fn get_extensions(&self) -> Vec<WebsocketExtension>;
+    //#[cfg(any(feature = "v2_68", feature = "dox"))]
+    //fn get_extensions(&self) -> /*Ignored*/Vec<WebsocketExtension>;
 
     //#[cfg(any(feature = "v2_50", feature = "dox"))]
     //fn get_io_stream(&self) -> /*Ignored*/Option<gio::IOStream>;
@@ -163,12 +161,10 @@ impl<O: IsA<WebsocketConnection>> WebsocketConnectionExt for O {
         }
     }
 
-    #[cfg(any(feature = "v2_68", feature = "dox"))]
-    fn get_extensions(&self) -> Vec<WebsocketExtension> {
-        unsafe {
-            FromGlibPtrContainer::from_glib_none(soup_sys::soup_websocket_connection_get_extensions(self.as_ref().to_glib_none().0))
-        }
-    }
+    //#[cfg(any(feature = "v2_68", feature = "dox"))]
+    //fn get_extensions(&self) -> /*Ignored*/Vec<WebsocketExtension> {
+    //    unsafe { TODO: call soup_sys:soup_websocket_connection_get_extensions() }
+    //}
 
     //#[cfg(any(feature = "v2_50", feature = "dox"))]
     //fn get_io_stream(&self) -> /*Ignored*/Option<gio::IOStream> {

@@ -2,6 +2,8 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
+#[cfg(any(feature = "v2_38", feature = "dox"))]
+use gio;
 use glib;
 use glib::object::Cast;
 use glib::object::IsA;
@@ -20,8 +22,9 @@ use std::mem::transmute;
 #[cfg(any(feature = "v2_48", feature = "dox"))]
 use std::ptr;
 use Address;
-use AuthDomain;
 use Message;
+#[cfg(any(feature = "v2_48", feature = "dox"))]
+use ServerListenOptions;
 use Socket;
 #[cfg(any(feature = "v2_48", feature = "dox"))]
 use URI;
@@ -46,7 +49,7 @@ pub trait ServerExt: 'static {
     //#[cfg(any(feature = "v2_50", feature = "dox"))]
     //fn accept_iostream(&self, stream: /*Ignored*/&gio::IOStream, local_addr: /*Ignored*/Option<&gio::SocketAddress>, remote_addr: /*Ignored*/Option<&gio::SocketAddress>) -> Result<(), glib::Error>;
 
-    fn add_auth_domain<P: IsA<AuthDomain>>(&self, auth_domain: &P);
+    //fn add_auth_domain(&self, auth_domain: /*Ignored*/&AuthDomain);
 
     //#[cfg(any(feature = "v2_50", feature = "dox"))]
     //fn add_early_handler(&self, path: Option<&str>, callback: /*Unimplemented*/Fn(&Server, &Message, &str, /*Unimplemented*/HashTable TypeId { ns_id: 0, id: 28 }/TypeId { ns_id: 0, id: 28 }, /*Ignored*/ClientContext), user_data: /*Unimplemented*/Option<Fundamental: Pointer>);
@@ -74,25 +77,25 @@ pub trait ServerExt: 'static {
     fn is_https(&self) -> bool;
 
     //#[cfg(any(feature = "v2_48", feature = "dox"))]
-    //fn listen(&self, address: /*Ignored*/&gio::SocketAddress, options: /*Ignored*/ServerListenOptions) -> Result<(), glib::Error>;
+    //fn listen(&self, address: /*Ignored*/&gio::SocketAddress, options: ServerListenOptions) -> Result<(), glib::Error>;
+
+    #[cfg(any(feature = "v2_48", feature = "dox"))]
+    fn listen_all(&self, port: u32, options: ServerListenOptions) -> Result<(), glib::Error>;
+
+    #[cfg(any(feature = "v2_48", feature = "dox"))]
+    fn listen_fd(&self, fd: i32, options: ServerListenOptions) -> Result<(), glib::Error>;
+
+    #[cfg(any(feature = "v2_48", feature = "dox"))]
+    fn listen_local(&self, port: u32, options: ServerListenOptions) -> Result<(), glib::Error>;
 
     //#[cfg(any(feature = "v2_48", feature = "dox"))]
-    //fn listen_all(&self, port: u32, options: /*Ignored*/ServerListenOptions) -> Result<(), glib::Error>;
-
-    //#[cfg(any(feature = "v2_48", feature = "dox"))]
-    //fn listen_fd(&self, fd: i32, options: /*Ignored*/ServerListenOptions) -> Result<(), glib::Error>;
-
-    //#[cfg(any(feature = "v2_48", feature = "dox"))]
-    //fn listen_local(&self, port: u32, options: /*Ignored*/ServerListenOptions) -> Result<(), glib::Error>;
-
-    //#[cfg(any(feature = "v2_48", feature = "dox"))]
-    //fn listen_socket(&self, socket: /*Ignored*/&gio::Socket, options: /*Ignored*/ServerListenOptions) -> Result<(), glib::Error>;
+    //fn listen_socket(&self, socket: /*Ignored*/&gio::Socket, options: ServerListenOptions) -> Result<(), glib::Error>;
 
     fn pause_message<P: IsA<Message>>(&self, msg: &P);
 
     fn quit(&self);
 
-    fn remove_auth_domain<P: IsA<AuthDomain>>(&self, auth_domain: &P);
+    //fn remove_auth_domain(&self, auth_domain: /*Ignored*/&AuthDomain);
 
     fn remove_handler(&self, path: &str);
 
@@ -138,8 +141,8 @@ pub trait ServerExt: 'static {
 
     fn get_property_ssl_key_file(&self) -> Option<GString>;
 
-    //#[cfg(any(feature = "v2_38", feature = "dox"))]
-    //fn get_property_tls_certificate(&self) -> /*Ignored*/Option<gio::TlsCertificate>;
+    #[cfg(any(feature = "v2_38", feature = "dox"))]
+    fn get_property_tls_certificate(&self) -> Option<gio::TlsCertificate>;
 
     //fn connect_request_aborted<Unsupported or ignored types>(&self, f: F) -> SignalHandlerId;
 
@@ -170,11 +173,9 @@ impl<O: IsA<Server>> ServerExt for O {
     //    unsafe { TODO: call soup_sys:soup_server_accept_iostream() }
     //}
 
-    fn add_auth_domain<P: IsA<AuthDomain>>(&self, auth_domain: &P) {
-        unsafe {
-            soup_sys::soup_server_add_auth_domain(self.as_ref().to_glib_none().0, auth_domain.as_ref().to_glib_none().0);
-        }
-    }
+    //fn add_auth_domain(&self, auth_domain: /*Ignored*/&AuthDomain) {
+    //    unsafe { TODO: call soup_sys:soup_server_add_auth_domain() }
+    //}
 
     //#[cfg(any(feature = "v2_50", feature = "dox"))]
     //fn add_early_handler(&self, path: Option<&str>, callback: /*Unimplemented*/Fn(&Server, &Message, &str, /*Unimplemented*/HashTable TypeId { ns_id: 0, id: 28 }/TypeId { ns_id: 0, id: 28 }, /*Ignored*/ClientContext), user_data: /*Unimplemented*/Option<Fundamental: Pointer>) {
@@ -238,27 +239,39 @@ impl<O: IsA<Server>> ServerExt for O {
     }
 
     //#[cfg(any(feature = "v2_48", feature = "dox"))]
-    //fn listen(&self, address: /*Ignored*/&gio::SocketAddress, options: /*Ignored*/ServerListenOptions) -> Result<(), glib::Error> {
+    //fn listen(&self, address: /*Ignored*/&gio::SocketAddress, options: ServerListenOptions) -> Result<(), glib::Error> {
     //    unsafe { TODO: call soup_sys:soup_server_listen() }
     //}
 
-    //#[cfg(any(feature = "v2_48", feature = "dox"))]
-    //fn listen_all(&self, port: u32, options: /*Ignored*/ServerListenOptions) -> Result<(), glib::Error> {
-    //    unsafe { TODO: call soup_sys:soup_server_listen_all() }
-    //}
+    #[cfg(any(feature = "v2_48", feature = "dox"))]
+    fn listen_all(&self, port: u32, options: ServerListenOptions) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = ptr::null_mut();
+            let _ = soup_sys::soup_server_listen_all(self.as_ref().to_glib_none().0, port, options.to_glib(), &mut error);
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
+
+    #[cfg(any(feature = "v2_48", feature = "dox"))]
+    fn listen_fd(&self, fd: i32, options: ServerListenOptions) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = ptr::null_mut();
+            let _ = soup_sys::soup_server_listen_fd(self.as_ref().to_glib_none().0, fd, options.to_glib(), &mut error);
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
+
+    #[cfg(any(feature = "v2_48", feature = "dox"))]
+    fn listen_local(&self, port: u32, options: ServerListenOptions) -> Result<(), glib::Error> {
+        unsafe {
+            let mut error = ptr::null_mut();
+            let _ = soup_sys::soup_server_listen_local(self.as_ref().to_glib_none().0, port, options.to_glib(), &mut error);
+            if error.is_null() { Ok(()) } else { Err(from_glib_full(error)) }
+        }
+    }
 
     //#[cfg(any(feature = "v2_48", feature = "dox"))]
-    //fn listen_fd(&self, fd: i32, options: /*Ignored*/ServerListenOptions) -> Result<(), glib::Error> {
-    //    unsafe { TODO: call soup_sys:soup_server_listen_fd() }
-    //}
-
-    //#[cfg(any(feature = "v2_48", feature = "dox"))]
-    //fn listen_local(&self, port: u32, options: /*Ignored*/ServerListenOptions) -> Result<(), glib::Error> {
-    //    unsafe { TODO: call soup_sys:soup_server_listen_local() }
-    //}
-
-    //#[cfg(any(feature = "v2_48", feature = "dox"))]
-    //fn listen_socket(&self, socket: /*Ignored*/&gio::Socket, options: /*Ignored*/ServerListenOptions) -> Result<(), glib::Error> {
+    //fn listen_socket(&self, socket: /*Ignored*/&gio::Socket, options: ServerListenOptions) -> Result<(), glib::Error> {
     //    unsafe { TODO: call soup_sys:soup_server_listen_socket() }
     //}
 
@@ -274,11 +287,9 @@ impl<O: IsA<Server>> ServerExt for O {
         }
     }
 
-    fn remove_auth_domain<P: IsA<AuthDomain>>(&self, auth_domain: &P) {
-        unsafe {
-            soup_sys::soup_server_remove_auth_domain(self.as_ref().to_glib_none().0, auth_domain.as_ref().to_glib_none().0);
-        }
-    }
+    //fn remove_auth_domain(&self, auth_domain: /*Ignored*/&AuthDomain) {
+    //    unsafe { TODO: call soup_sys:soup_server_remove_auth_domain() }
+    //}
 
     fn remove_handler(&self, path: &str) {
         unsafe {
@@ -412,14 +423,14 @@ impl<O: IsA<Server>> ServerExt for O {
         }
     }
 
-    //#[cfg(any(feature = "v2_38", feature = "dox"))]
-    //fn get_property_tls_certificate(&self) -> /*Ignored*/Option<gio::TlsCertificate> {
-    //    unsafe {
-    //        let mut value = Value::from_type(</*Unknown type*/ as StaticType>::static_type());
-    //        gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"tls-certificate\0".as_ptr() as *const _, value.to_glib_none_mut().0);
-    //        value.get().expect("Return Value for property `tls-certificate` getter")
-    //    }
-    //}
+    #[cfg(any(feature = "v2_38", feature = "dox"))]
+    fn get_property_tls_certificate(&self) -> Option<gio::TlsCertificate> {
+        unsafe {
+            let mut value = Value::from_type(<gio::TlsCertificate as StaticType>::static_type());
+            gobject_sys::g_object_get_property(self.to_glib_none().0 as *mut gobject_sys::GObject, b"tls-certificate\0".as_ptr() as *const _, value.to_glib_none_mut().0);
+            value.get().expect("Return Value for property `tls-certificate` getter")
+        }
+    }
 
     //fn connect_request_aborted<Unsupported or ignored types>(&self, f: F) -> SignalHandlerId {
     //    Ignored client: Soup.ClientContext

@@ -2,11 +2,41 @@
 name = "soup"
 version = "0.1.0"
 authors = ["WhizSid <whizsid@aol.com>"]
-edition = "2018"
+exclude = [
+    "gir-files/*",
+]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "soup"
+
+[features]
+#default = ["v2_68"]
+dox=["soup-sys/dox"]
+v2_24=["soup-sys/v2_24"]
+v2_26=["v2_24","soup-sys/v2_26"]
+v2_26_3=["v2_26","soup-sys/v2_26_3"]
+v2_28=["v2_26_3","soup-sys/v2_28"]
+v2_30=["v2_28","soup-sys/v2_30"]
+v2_32=["v2_30","soup-sys/v2_32"]
+v2_34=["v2_32","soup-sys/v2_34"]
+v2_36=["v2_34","soup-sys/v2_36"]
+v2_38=["v2_36","soup-sys/v2_38"]
+v2_40=["v2_38","soup-sys/v2_40"]
+v2_42=["v2_40","soup-sys/v2_42"]
+v2_44=["v2_42","soup-sys/v2_44"]
+v2_46=["v2_44","soup-sys/v2_46"]
+v2_48=["v2_46","soup-sys/v2_48"]
+v2_50=["v2_48","soup-sys/v2_50"]
+v2_52=["v2_50","soup-sys/v2_52"]
+v2_54=["v2_52","soup-sys/v2_54"]
+v2_56=["v2_54","soup-sys/v2_56"]
+v2_58=["v2_56","soup-sys/v2_58"]
+v2_60=["v2_58","soup-sys/v2_60"]
+v2_62=["v2_60","soup-sys/v2_60"]
+v2_68=["v2_62","soup-sys/v2_60"]
 
 [dependencies]
+bitflags = "^1.0"
 
 [dependencies.gobject-sys]
 git = "https://github.com/gtk-rs/sys"
@@ -23,5 +53,14 @@ git = "https://github.com/gtk-rs/glib"
 [dependencies.glib-sys]
 git = "https://github.com/gtk-rs/sys"
 
+[dependencies.gtk]
+git = "https://github.com/gtk-rs/gtk"
+
+[dependencies.gtk-sys]
+git = "https://github.com/gtk-rs/sys"
+
+[dependencies.libc]
+git = "https://github.com/rust-lang/libc"
+
 [dependencies.soup-sys]
-path = "soup-sys-rs"
+git = "https://github.com/gtk-rs/soup-sys-rs"

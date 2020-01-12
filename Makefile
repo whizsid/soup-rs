@@ -5,20 +5,13 @@ GIR_FILES = gir-files/Soup-2.4.gir
 # Run `gir` generating the bindings
 gir : src/auto/mod.rs
 
-gir-sys : soup-sys-rs/src/lib.rs
-
 regen_check: $(GIR) $(GIR_FILES)
 	rm src/auto/*
-	rm soup-sys-rs/tests/*
 	$(GIR) -c Gir.toml
-	$(GIR) -c soup-sys-rs/gir-soup.toml
 	git diff -R --exit-code
 
 src/auto/mod.rs : Gir.toml $(GIR) $(GIR_FILES)
 	$(GIR) -c Gir.toml
-
-soup-sys-rs/src/lib.rs : soup-sys-rs/gir-soup.toml $(GIR) $(GIR_FILES)
-	$(GIR) -c soup-sys-rs/gir-soup.toml
 
 $(GIR) : $(GIR_SRC)
 	rm -f gir/target/bin/gir

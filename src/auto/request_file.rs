@@ -19,12 +19,12 @@ glib_wrapper! {
 pub const NONE_REQUEST_FILE: Option<&RequestFile> = None;
 
 pub trait RequestFileExt: 'static {
-    //#[cfg(any(feature = "v2_40", feature = "dox"))]
+    //#[cfg(any(feature = "v0", feature = "dox"))]
     //fn get_file(&self) -> /*Ignored*/Option<gio::File>;
 }
 
 impl<O: IsA<RequestFile>> RequestFileExt for O {
-    //#[cfg(any(feature = "v2_40", feature = "dox"))]
+    //#[cfg(any(feature = "v0", feature = "dox"))]
     //fn get_file(&self) -> /*Ignored*/Option<gio::File> {
     //    unsafe { TODO: call soup_sys:soup_request_file_get_file() }
     //}

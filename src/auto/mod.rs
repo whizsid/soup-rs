@@ -16,18 +16,6 @@ pub use self::auth_basic::{AuthBasic, AuthBasicClass};
 mod auth_digest;
 pub use self::auth_digest::{AuthDigest, AuthDigestClass};
 
-mod auth_domain;
-pub use self::auth_domain::{AuthDomain, AuthDomainClass, NONE_AUTH_DOMAIN};
-pub use self::auth_domain::AuthDomainExt;
-
-mod auth_domain_basic;
-pub use self::auth_domain_basic::{AuthDomainBasic, AuthDomainBasicClass, NONE_AUTH_DOMAIN_BASIC};
-pub use self::auth_domain_basic::AuthDomainBasicExt;
-
-mod auth_domain_digest;
-pub use self::auth_domain_digest::{AuthDomainDigest, AuthDomainDigestClass, NONE_AUTH_DOMAIN_DIGEST};
-pub use self::auth_domain_digest::AuthDomainDigestExt;
-
 #[cfg(any(feature = "v2_42", feature = "dox"))]
 mod auth_manager;
 #[cfg(any(feature = "v2_42", feature = "dox"))]
@@ -121,11 +109,16 @@ pub use self::request::{Request, RequestClass, NONE_REQUEST};
 #[cfg(any(feature = "v2_42", feature = "dox"))]
 pub use self::request::RequestExt;
 
+#[cfg(any(feature = "v0", feature = "dox"))]
 mod request_data;
+#[cfg(any(feature = "v0", feature = "dox"))]
 pub use self::request_data::{RequestData, RequestDataClass, NONE_REQUEST_DATA};
 
+#[cfg(any(feature = "v0", feature = "dox"))]
 mod request_file;
+#[cfg(any(feature = "v0", feature = "dox"))]
 pub use self::request_file::{RequestFile, RequestFileClass, NONE_REQUEST_FILE};
+#[cfg(any(feature = "v0", feature = "dox"))]
 pub use self::request_file::RequestFileExt;
 
 #[cfg(any(feature = "v2_40", feature = "dox"))]
@@ -143,16 +136,6 @@ mod server;
 pub use self::server::{Server, ServerClass, NONE_SERVER};
 pub use self::server::ServerExt;
 
-mod session;
-pub use self::session::{Session, SessionClass, NONE_SESSION};
-pub use self::session::SessionExt;
-
-mod session_async;
-pub use self::session_async::{SessionAsync, SessionAsyncClass, NONE_SESSION_ASYNC};
-
-mod session_sync;
-pub use self::session_sync::{SessionSync, SessionSyncClass, NONE_SESSION_SYNC};
-
 mod socket;
 pub use self::socket::{Socket, SocketClass, NONE_SOCKET};
 pub use self::socket::SocketExt;
@@ -164,18 +147,11 @@ pub use self::websocket_connection::{WebsocketConnection, WebsocketConnectionCla
 #[cfg(any(feature = "v2_50", feature = "dox"))]
 pub use self::websocket_connection::WebsocketConnectionExt;
 
-#[cfg(any(feature = "v2_68", feature = "dox"))]
-mod websocket_extension;
-#[cfg(any(feature = "v2_68", feature = "dox"))]
-pub use self::websocket_extension::{WebsocketExtension, WebsocketExtensionClass, NONE_WEBSOCKET_EXTENSION};
-#[cfg(any(feature = "v2_68", feature = "dox"))]
-pub use self::websocket_extension::WebsocketExtensionExt;
+mod message_body;
+pub use self::message_body::MessageBody;
 
-mod websocket_extension_deflate;
-pub use self::websocket_extension_deflate::{WebsocketExtensionDeflate, WebsocketExtensionDeflateClass, NONE_WEBSOCKET_EXTENSION_DEFLATE};
-
-mod websocket_extension_manager;
-pub use self::websocket_extension_manager::{WebsocketExtensionManager, WebsocketExtensionManagerClass, NONE_WEBSOCKET_EXTENSION_MANAGER};
+mod message_headers;
+pub use self::message_headers::MessageHeaders;
 
 mod uri;
 pub use self::uri::URI;
@@ -216,13 +192,17 @@ pub use self::enums::WebsocketState;
 pub use self::enums::XMLRPCError;
 pub use self::enums::XMLRPCFault;
 
+mod flags;
+pub use self::flags::Cacheability;
+pub use self::flags::Expectation;
+pub use self::flags::MessageFlags;
+#[cfg(any(feature = "v2_48", feature = "dox"))]
+pub use self::flags::ServerListenOptions;
+
 #[doc(hidden)]
 pub mod traits {
     pub use super::AddressExt;
     pub use super::AuthExt;
-    pub use super::AuthDomainExt;
-    pub use super::AuthDomainBasicExt;
-    pub use super::AuthDomainDigestExt;
     #[cfg(any(feature = "v2_42", feature = "dox"))]
     pub use super::AuthManagerExt;
     #[cfg(any(feature = "v2_34", feature = "dox"))]
@@ -246,15 +226,13 @@ pub mod traits {
     pub use super::ProxyResolverDefaultExt;
     #[cfg(any(feature = "v2_42", feature = "dox"))]
     pub use super::RequestExt;
+    #[cfg(any(feature = "v0", feature = "dox"))]
     pub use super::RequestFileExt;
     #[cfg(any(feature = "v2_40", feature = "dox"))]
     pub use super::RequestHTTPExt;
     pub use super::RequesterExt;
     pub use super::ServerExt;
-    pub use super::SessionExt;
     pub use super::SocketExt;
     #[cfg(any(feature = "v2_50", feature = "dox"))]
     pub use super::WebsocketConnectionExt;
-    #[cfg(any(feature = "v2_68", feature = "dox"))]
-    pub use super::WebsocketExtensionExt;
 }

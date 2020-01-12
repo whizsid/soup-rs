@@ -7,7 +7,7 @@ use glib::GString;
 use soup_sys;
 
 glib_wrapper! {
-    #[derive(Debug, PartialOrd, Ord, Hash)]
+    #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct URI(Boxed<soup_sys::SoupURI>);
 
     match fn {
@@ -36,12 +36,6 @@ impl URI {
     pub fn copy_host(&mut self) -> Option<URI> {
         unsafe {
             from_glib_full(soup_sys::soup_uri_copy_host(self.to_glib_none_mut().0))
-        }
-    }
-
-    fn equal(&mut self, uri2: &mut URI) -> bool {
-        unsafe {
-            from_glib(soup_sys::soup_uri_equal(self.to_glib_none_mut().0, uri2.to_glib_none_mut().0))
         }
     }
 
@@ -204,12 +198,3 @@ impl URI {
         }
     }
 }
-
-impl PartialEq for URI {
-    #[inline]
-    fn eq(&self, other: &Self) -> bool {
-        self.equal(other)
-    }
-}
-
-impl Eq for URI {}
