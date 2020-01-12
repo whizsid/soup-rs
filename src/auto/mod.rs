@@ -2,6 +2,259 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
+mod address;
+pub use self::address::{Address, AddressClass, NONE_ADDRESS};
+pub use self::address::AddressExt;
+
+mod auth;
+pub use self::auth::{Auth, AuthClass, NONE_AUTH};
+pub use self::auth::AuthExt;
+
+mod auth_basic;
+pub use self::auth_basic::{AuthBasic, AuthBasicClass};
+
+mod auth_digest;
+pub use self::auth_digest::{AuthDigest, AuthDigestClass};
+
+mod auth_domain;
+pub use self::auth_domain::{AuthDomain, AuthDomainClass, NONE_AUTH_DOMAIN};
+pub use self::auth_domain::AuthDomainExt;
+
+mod auth_domain_basic;
+pub use self::auth_domain_basic::{AuthDomainBasic, AuthDomainBasicClass, NONE_AUTH_DOMAIN_BASIC};
+pub use self::auth_domain_basic::AuthDomainBasicExt;
+
+mod auth_domain_digest;
+pub use self::auth_domain_digest::{AuthDomainDigest, AuthDomainDigestClass, NONE_AUTH_DOMAIN_DIGEST};
+pub use self::auth_domain_digest::AuthDomainDigestExt;
+
+#[cfg(any(feature = "v2_42", feature = "dox"))]
+mod auth_manager;
+#[cfg(any(feature = "v2_42", feature = "dox"))]
+pub use self::auth_manager::{AuthManager, AuthManagerClass, NONE_AUTH_MANAGER};
+#[cfg(any(feature = "v2_42", feature = "dox"))]
+pub use self::auth_manager::AuthManagerExt;
+
+mod auth_ntlm;
+pub use self::auth_ntlm::{AuthNTLM, AuthNTLMClass};
+
+#[cfg(any(feature = "v2_54", feature = "dox"))]
+mod auth_negotiate;
+#[cfg(any(feature = "v2_54", feature = "dox"))]
+pub use self::auth_negotiate::{AuthNegotiate, AuthNegotiateClass};
+
+#[cfg(any(feature = "v2_34", feature = "dox"))]
+mod cache;
+#[cfg(any(feature = "v2_34", feature = "dox"))]
+pub use self::cache::{Cache, CacheClass, NONE_CACHE};
+#[cfg(any(feature = "v2_34", feature = "dox"))]
+pub use self::cache::CacheExt;
+
+mod content_decoder;
+pub use self::content_decoder::{ContentDecoder, ContentDecoderClass, NONE_CONTENT_DECODER};
+
+#[cfg(any(feature = "v2_28", feature = "dox"))]
+mod content_sniffer;
+#[cfg(any(feature = "v2_28", feature = "dox"))]
+pub use self::content_sniffer::{ContentSniffer, ContentSnifferClass, NONE_CONTENT_SNIFFER};
+#[cfg(any(feature = "v2_28", feature = "dox"))]
+pub use self::content_sniffer::ContentSnifferExt;
+
+#[cfg(any(feature = "v2_24", feature = "dox"))]
+mod cookie_jar;
+#[cfg(any(feature = "v2_24", feature = "dox"))]
+pub use self::cookie_jar::{CookieJar, CookieJarClass, NONE_COOKIE_JAR};
+#[cfg(any(feature = "v2_24", feature = "dox"))]
+pub use self::cookie_jar::CookieJarExt;
+
+#[cfg(any(feature = "v2_42", feature = "dox"))]
+mod cookie_jar_db;
+#[cfg(any(feature = "v2_42", feature = "dox"))]
+pub use self::cookie_jar_db::{CookieJarDB, CookieJarDBClass, NONE_COOKIE_JAR_DB};
+#[cfg(any(feature = "v2_42", feature = "dox"))]
+pub use self::cookie_jar_db::CookieJarDBExt;
+
+#[cfg(any(feature = "v2_26", feature = "dox"))]
+mod cookie_jar_text;
+#[cfg(any(feature = "v2_26", feature = "dox"))]
+pub use self::cookie_jar_text::{CookieJarText, CookieJarTextClass, NONE_COOKIE_JAR_TEXT};
+#[cfg(any(feature = "v2_26", feature = "dox"))]
+pub use self::cookie_jar_text::CookieJarTextExt;
+
+#[cfg(any(feature = "v2_68", feature = "dox"))]
+mod hsts_enforcer;
+#[cfg(any(feature = "v2_68", feature = "dox"))]
+pub use self::hsts_enforcer::{HSTSEnforcer, HSTSEnforcerClass, NONE_HSTS_ENFORCER};
+#[cfg(any(feature = "v2_68", feature = "dox"))]
+pub use self::hsts_enforcer::HSTSEnforcerExt;
+
+#[cfg(any(feature = "v2_68", feature = "dox"))]
+mod hsts_enforcer_db;
+#[cfg(any(feature = "v2_68", feature = "dox"))]
+pub use self::hsts_enforcer_db::{HSTSEnforcerDB, HSTSEnforcerDBClass, NONE_HSTS_ENFORCER_DB};
+#[cfg(any(feature = "v2_68", feature = "dox"))]
+pub use self::hsts_enforcer_db::HSTSEnforcerDBExt;
+
+mod logger;
+pub use self::logger::{Logger, LoggerClass, NONE_LOGGER};
+pub use self::logger::LoggerExt;
+
+mod message;
+pub use self::message::{Message, MessageClass, NONE_MESSAGE};
+pub use self::message::MessageExt;
+
+#[cfg(any(feature = "v2_40", feature = "dox"))]
+mod multipart_input_stream;
+#[cfg(any(feature = "v2_40", feature = "dox"))]
+pub use self::multipart_input_stream::{MultipartInputStream, MultipartInputStreamClass, NONE_MULTIPART_INPUT_STREAM};
+#[cfg(any(feature = "v2_40", feature = "dox"))]
+pub use self::multipart_input_stream::MultipartInputStreamExt;
+
+mod proxy_resolver_default;
+pub use self::proxy_resolver_default::{ProxyResolverDefault, ProxyResolverDefaultClass, NONE_PROXY_RESOLVER_DEFAULT};
+pub use self::proxy_resolver_default::ProxyResolverDefaultExt;
+
+#[cfg(any(feature = "v2_42", feature = "dox"))]
+mod request;
+#[cfg(any(feature = "v2_42", feature = "dox"))]
+pub use self::request::{Request, RequestClass, NONE_REQUEST};
+#[cfg(any(feature = "v2_42", feature = "dox"))]
+pub use self::request::RequestExt;
+
+mod request_data;
+pub use self::request_data::{RequestData, RequestDataClass, NONE_REQUEST_DATA};
+
+mod request_file;
+pub use self::request_file::{RequestFile, RequestFileClass, NONE_REQUEST_FILE};
+pub use self::request_file::RequestFileExt;
+
+#[cfg(any(feature = "v2_40", feature = "dox"))]
+mod request_http;
+#[cfg(any(feature = "v2_40", feature = "dox"))]
+pub use self::request_http::{RequestHTTP, RequestHTTPClass, NONE_REQUEST_HTTP};
+#[cfg(any(feature = "v2_40", feature = "dox"))]
+pub use self::request_http::RequestHTTPExt;
+
+mod requester;
+pub use self::requester::{Requester, RequesterClass, NONE_REQUESTER};
+pub use self::requester::RequesterExt;
+
+mod server;
+pub use self::server::{Server, ServerClass, NONE_SERVER};
+pub use self::server::ServerExt;
+
+mod session;
+pub use self::session::{Session, SessionClass, NONE_SESSION};
+pub use self::session::SessionExt;
+
+mod session_async;
+pub use self::session_async::{SessionAsync, SessionAsyncClass, NONE_SESSION_ASYNC};
+
+mod session_sync;
+pub use self::session_sync::{SessionSync, SessionSyncClass, NONE_SESSION_SYNC};
+
+mod socket;
+pub use self::socket::{Socket, SocketClass, NONE_SOCKET};
+pub use self::socket::SocketExt;
+
+#[cfg(any(feature = "v2_50", feature = "dox"))]
+mod websocket_connection;
+#[cfg(any(feature = "v2_50", feature = "dox"))]
+pub use self::websocket_connection::{WebsocketConnection, WebsocketConnectionClass, NONE_WEBSOCKET_CONNECTION};
+#[cfg(any(feature = "v2_50", feature = "dox"))]
+pub use self::websocket_connection::WebsocketConnectionExt;
+
+#[cfg(any(feature = "v2_68", feature = "dox"))]
+mod websocket_extension;
+#[cfg(any(feature = "v2_68", feature = "dox"))]
+pub use self::websocket_extension::{WebsocketExtension, WebsocketExtensionClass, NONE_WEBSOCKET_EXTENSION};
+#[cfg(any(feature = "v2_68", feature = "dox"))]
+pub use self::websocket_extension::WebsocketExtensionExt;
+
+mod websocket_extension_deflate;
+pub use self::websocket_extension_deflate::{WebsocketExtensionDeflate, WebsocketExtensionDeflateClass, NONE_WEBSOCKET_EXTENSION_DEFLATE};
+
+mod websocket_extension_manager;
+pub use self::websocket_extension_manager::{WebsocketExtensionManager, WebsocketExtensionManagerClass, NONE_WEBSOCKET_EXTENSION_MANAGER};
+
+mod uri;
+pub use self::uri::URI;
+
+mod enums;
+pub use self::enums::AddressFamily;
+pub use self::enums::CacheResponse;
+#[cfg(any(feature = "v2_34", feature = "dox"))]
+pub use self::enums::CacheType;
+pub use self::enums::ConnectionState;
+#[cfg(any(feature = "v2_30", feature = "dox"))]
+pub use self::enums::CookieJarAcceptPolicy;
+pub use self::enums::DateFormat;
+pub use self::enums::Encoding;
+pub use self::enums::HTTPVersion;
+pub use self::enums::KnownStatusCode;
+pub use self::enums::LoggerLogLevel;
+pub use self::enums::MemoryUse;
+pub use self::enums::MessageHeadersType;
+pub use self::enums::MessagePriority;
+#[cfg(any(feature = "v2_42", feature = "dox"))]
+pub use self::enums::RequestError;
+pub use self::enums::RequesterError;
+pub use self::enums::SocketIOStatus;
+pub use self::enums::Status;
+#[cfg(any(feature = "v2_40", feature = "dox"))]
+pub use self::enums::TLDError;
+#[cfg(any(feature = "v2_50", feature = "dox"))]
+pub use self::enums::WebsocketCloseCode;
+#[cfg(any(feature = "v2_50", feature = "dox"))]
+pub use self::enums::WebsocketConnectionType;
+#[cfg(any(feature = "v2_50", feature = "dox"))]
+pub use self::enums::WebsocketDataType;
+#[cfg(any(feature = "v2_50", feature = "dox"))]
+pub use self::enums::WebsocketError;
+#[cfg(any(feature = "v2_50", feature = "dox"))]
+pub use self::enums::WebsocketState;
+pub use self::enums::XMLRPCError;
+pub use self::enums::XMLRPCFault;
+
 #[doc(hidden)]
 pub mod traits {
+    pub use super::AddressExt;
+    pub use super::AuthExt;
+    pub use super::AuthDomainExt;
+    pub use super::AuthDomainBasicExt;
+    pub use super::AuthDomainDigestExt;
+    #[cfg(any(feature = "v2_42", feature = "dox"))]
+    pub use super::AuthManagerExt;
+    #[cfg(any(feature = "v2_34", feature = "dox"))]
+    pub use super::CacheExt;
+    #[cfg(any(feature = "v2_28", feature = "dox"))]
+    pub use super::ContentSnifferExt;
+    #[cfg(any(feature = "v2_24", feature = "dox"))]
+    pub use super::CookieJarExt;
+    #[cfg(any(feature = "v2_42", feature = "dox"))]
+    pub use super::CookieJarDBExt;
+    #[cfg(any(feature = "v2_26", feature = "dox"))]
+    pub use super::CookieJarTextExt;
+    #[cfg(any(feature = "v2_68", feature = "dox"))]
+    pub use super::HSTSEnforcerExt;
+    #[cfg(any(feature = "v2_68", feature = "dox"))]
+    pub use super::HSTSEnforcerDBExt;
+    pub use super::LoggerExt;
+    pub use super::MessageExt;
+    #[cfg(any(feature = "v2_40", feature = "dox"))]
+    pub use super::MultipartInputStreamExt;
+    pub use super::ProxyResolverDefaultExt;
+    #[cfg(any(feature = "v2_42", feature = "dox"))]
+    pub use super::RequestExt;
+    pub use super::RequestFileExt;
+    #[cfg(any(feature = "v2_40", feature = "dox"))]
+    pub use super::RequestHTTPExt;
+    pub use super::RequesterExt;
+    pub use super::ServerExt;
+    pub use super::SessionExt;
+    pub use super::SocketExt;
+    #[cfg(any(feature = "v2_50", feature = "dox"))]
+    pub use super::WebsocketConnectionExt;
+    #[cfg(any(feature = "v2_68", feature = "dox"))]
+    pub use super::WebsocketExtensionExt;
 }
