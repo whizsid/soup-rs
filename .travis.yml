@@ -6,7 +6,7 @@ rust:
   - stable
 before_install:
   - sudo apt-get update
-  - sudo apt-get install libsoup2.4 -y
+  - sudo apt-get install libsoup2.4-dev -y
 addons:
   apt:
     packages:
