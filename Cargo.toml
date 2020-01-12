@@ -1,13 +1,23 @@
 [package]
 name = "soup"
 version = "0.1.0"
-authors = ["WhizSid <whizsid@aol.com>"]
+authors = ["WhizSid"]
+categories = ["api-bindings", "gui"]
+description = "Rust bindings for soup library"
+repository = "https://github.com/whizsid/soup-rs"
+license = "MIT"
+homepage = "http://gtk-rs.org/"
+keywords = ["libsoup", "gtk-rs", "gnome", "GUI"]
 exclude = [
     "gir-files/*",
 ]
 
 [lib]
 name = "soup"
+
+[badges]
+travis-ci = { repository = "whizsid/soup-rs" }
+
 
 [features]
 #default = ["v2_68"]
