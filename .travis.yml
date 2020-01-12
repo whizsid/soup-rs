@@ -6,7 +6,7 @@ rust:
   - stable
 before_install:
   - sudo apt-get update
-  - sudo apt-get install libsoup=2.4 -y
+  - sudo apt install libsoup2.4-dev -y
 addons:
   apt:
     packages:
@@ -19,4 +19,4 @@ script:
     fi
   - ./check_init_asserts
   - cargo build
-  - cargo build --features="v2_68"
+  - cargo build --features="v2_52"

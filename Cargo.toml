@@ -20,7 +20,7 @@ travis-ci = { repository = "whizsid/soup-rs" }
 
 
 [features]
-#default = ["v2_68"]
+#default = ["v2_52"]
 dox=["soup-sys/dox"]
 v2_24=["soup-sys/v2_24"]
 v2_26=["v2_24","soup-sys/v2_26"]
