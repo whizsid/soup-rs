@@ -1,0 +1,21 @@
+[crate_name_overrides]
+
+[options]
+girs_dir = "gir-files"
+library = "Soup"
+version = "2.4"
+work_mode = "normal"
+target_path = "."
+generate_safety_asserts = true
+single_version_file = true
+
+external_libraries = [
+    "Gio"
+]
+
+generate = [
+	"Soup.ADDRESS"
+]
+
+manual = [
+]

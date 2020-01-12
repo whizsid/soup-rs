@@ -1,0 +1,9 @@
+[submodule "gir"]
+	path = gir
+	url = https://github.com/gtk-rs/gir.git
+[submodule "gir-files"]
+	path = gir-files
+	url = https://github.com/gtk-rs/gir-files.git
+[submodule "soup-sys-rs"]
+	path = soup-sys-rs
+	url = https://github.com/gtk-rs/soup-sys-rs.git

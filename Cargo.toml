@@ -1,0 +1,12 @@
+[package]
+name = "soup-rs"
+version = "0.1.0"
+authors = ["WhizSid <whizsid@aol.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[dependencies.gio]
+git = "https://github.com/gtk-rs/gio"
