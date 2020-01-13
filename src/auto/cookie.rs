@@ -8,8 +8,6 @@ use glib::translate::*;
 use glib::GString;
 use soup_sys;
 #[cfg(any(feature = "v2_24", feature = "dox"))]
-use Date;
-#[cfg(any(feature = "v2_24", feature = "dox"))]
 use URI;
 
 glib_wrapper! {
@@ -53,12 +51,10 @@ impl Cookie {
         }
     }
 
-    #[cfg(any(feature = "v2_32", feature = "dox"))]
-    pub fn get_expires(&mut self) -> Option<Date> {
-        unsafe {
-            from_glib_none(soup_sys::soup_cookie_get_expires(self.to_glib_none_mut().0))
-        }
-    }
+    //#[cfg(any(feature = "v2_32", feature = "dox"))]
+    //pub fn get_expires(&mut self) -> /*Ignored*/Option<Date> {
+    //    unsafe { TODO: call soup_sys:soup_cookie_get_expires() }
+    //}
 
     #[cfg(any(feature = "v2_32", feature = "dox"))]
     pub fn get_http_only(&mut self) -> bool {
@@ -102,12 +98,10 @@ impl Cookie {
         }
     }
 
-    #[cfg(any(feature = "v2_24", feature = "dox"))]
-    pub fn set_expires(&mut self, expires: &mut Date) {
-        unsafe {
-            soup_sys::soup_cookie_set_expires(self.to_glib_none_mut().0, expires.to_glib_none_mut().0);
-        }
-    }
+    //#[cfg(any(feature = "v2_24", feature = "dox"))]
+    //pub fn set_expires(&mut self, expires: /*Ignored*/&mut Date) {
+    //    unsafe { TODO: call soup_sys:soup_cookie_set_expires() }
+    //}
 
     #[cfg(any(feature = "v2_24", feature = "dox"))]
     pub fn set_http_only(&mut self, http_only: bool) {

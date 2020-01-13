@@ -29,7 +29,7 @@ generate = [
 	"Soup.CookieJar",
 	"Soup.CookieJarDB",
 	"Soup.CookieJarText",
-	"Soup.Date",
+	# "Soup.Date",
 	"Soup.HSTSEnforcer",
 	"Soup.HSTSEnforcerDB",
 	# "Soup.Logger",
