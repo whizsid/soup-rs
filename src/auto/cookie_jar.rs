@@ -2,27 +2,22 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-#[cfg(any(feature = "v2_30", feature = "dox"))]
 use glib::object::Cast;
 use glib::object::IsA;
-#[cfg(any(feature = "v2_30", feature = "dox"))]
 use glib::signal::connect_raw;
-#[cfg(any(feature = "v2_30", feature = "dox"))]
 use glib::signal::SignalHandlerId;
 use glib::translate::*;
 #[cfg(any(feature = "v2_24", feature = "dox"))]
 use glib::GString;
 use glib::StaticType;
 use glib::Value;
-#[cfg(any(feature = "v2_30", feature = "dox"))]
 use glib_sys;
 use gobject_sys;
 use soup_sys;
-#[cfg(any(feature = "v2_30", feature = "dox"))]
 use std::boxed::Box as Box_;
 use std::fmt;
-#[cfg(any(feature = "v2_30", feature = "dox"))]
 use std::mem::transmute;
+use Cookie;
 #[cfg(any(feature = "v2_30", feature = "dox"))]
 use CookieJarAcceptPolicy;
 #[cfg(any(feature = "v2_24", feature = "dox"))]
@@ -56,26 +51,26 @@ impl Default for CookieJar {
 pub const NONE_COOKIE_JAR: Option<&CookieJar> = None;
 
 pub trait CookieJarExt: 'static {
-    //#[cfg(any(feature = "v2_26", feature = "dox"))]
-    //fn add_cookie(&self, cookie: /*Ignored*/&mut Cookie);
+    #[cfg(any(feature = "v2_26", feature = "dox"))]
+    fn add_cookie(&self, cookie: &mut Cookie);
 
-    //#[cfg(any(feature = "v2_68", feature = "dox"))]
-    //fn add_cookie_full(&self, cookie: /*Ignored*/&mut Cookie, uri: Option<&mut URI>, first_party: Option<&mut URI>);
+    #[cfg(any(feature = "v2_68", feature = "dox"))]
+    fn add_cookie_full(&self, cookie: &mut Cookie, uri: Option<&mut URI>, first_party: Option<&mut URI>);
 
-    //#[cfg(any(feature = "v2_40", feature = "dox"))]
-    //fn add_cookie_with_first_party(&self, first_party: &mut URI, cookie: /*Ignored*/&mut Cookie);
+    #[cfg(any(feature = "v2_40", feature = "dox"))]
+    fn add_cookie_with_first_party(&self, first_party: &mut URI, cookie: &mut Cookie);
 
-    //#[cfg(any(feature = "v2_26", feature = "dox"))]
-    //fn all_cookies(&self) -> /*Ignored*/Vec<Cookie>;
+    #[cfg(any(feature = "v2_26", feature = "dox"))]
+    fn all_cookies(&self) -> Vec<Cookie>;
 
-    //#[cfg(any(feature = "v2_26", feature = "dox"))]
-    //fn delete_cookie(&self, cookie: /*Ignored*/&mut Cookie);
+    #[cfg(any(feature = "v2_26", feature = "dox"))]
+    fn delete_cookie(&self, cookie: &mut Cookie);
 
     #[cfg(any(feature = "v2_30", feature = "dox"))]
     fn get_accept_policy(&self) -> CookieJarAcceptPolicy;
 
-    //#[cfg(any(feature = "v2_40", feature = "dox"))]
-    //fn get_cookie_list(&self, uri: &mut URI, for_http: bool) -> /*Ignored*/Vec<Cookie>;
+    #[cfg(any(feature = "v2_40", feature = "dox"))]
+    fn get_cookie_list(&self, uri: &mut URI, for_http: bool) -> Vec<Cookie>;
 
     #[cfg(any(feature = "v2_24", feature = "dox"))]
     fn get_cookies(&self, uri: &mut URI, for_http: bool) -> Option<GString>;
@@ -97,37 +92,47 @@ pub trait CookieJarExt: 'static {
 
     fn get_property_read_only(&self) -> bool;
 
-    //fn connect_changed<Unsupported or ignored types>(&self, f: F) -> SignalHandlerId;
+    fn connect_changed<F: Fn(&Self, &Cookie, &Cookie) + 'static>(&self, f: F) -> SignalHandlerId;
 
     #[cfg(any(feature = "v2_30", feature = "dox"))]
     fn connect_property_accept_policy_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId;
 }
 
 impl<O: IsA<CookieJar>> CookieJarExt for O {
-    //#[cfg(any(feature = "v2_26", feature = "dox"))]
-    //fn add_cookie(&self, cookie: /*Ignored*/&mut Cookie) {
-    //    unsafe { TODO: call soup_sys:soup_cookie_jar_add_cookie() }
-    //}
+    #[cfg(any(feature = "v2_26", feature = "dox"))]
+    fn add_cookie(&self, cookie: &mut Cookie) {
+        unsafe {
+            soup_sys::soup_cookie_jar_add_cookie(self.as_ref().to_glib_none().0, cookie.to_glib_full());
+        }
+    }
 
-    //#[cfg(any(feature = "v2_68", feature = "dox"))]
-    //fn add_cookie_full(&self, cookie: /*Ignored*/&mut Cookie, uri: Option<&mut URI>, first_party: Option<&mut URI>) {
-    //    unsafe { TODO: call soup_sys:soup_cookie_jar_add_cookie_full() }
-    //}
+    #[cfg(any(feature = "v2_68", feature = "dox"))]
+    fn add_cookie_full(&self, cookie: &mut Cookie, uri: Option<&mut URI>, first_party: Option<&mut URI>) {
+        unsafe {
+            soup_sys::soup_cookie_jar_add_cookie_full(self.as_ref().to_glib_none().0, cookie.to_glib_full(), uri.to_glib_none_mut().0, first_party.to_glib_none_mut().0);
+        }
+    }
 
-    //#[cfg(any(feature = "v2_40", feature = "dox"))]
-    //fn add_cookie_with_first_party(&self, first_party: &mut URI, cookie: /*Ignored*/&mut Cookie) {
-    //    unsafe { TODO: call soup_sys:soup_cookie_jar_add_cookie_with_first_party() }
-    //}
+    #[cfg(any(feature = "v2_40", feature = "dox"))]
+    fn add_cookie_with_first_party(&self, first_party: &mut URI, cookie: &mut Cookie) {
+        unsafe {
+            soup_sys::soup_cookie_jar_add_cookie_with_first_party(self.as_ref().to_glib_none().0, first_party.to_glib_none_mut().0, cookie.to_glib_full());
+        }
+    }
 
-    //#[cfg(any(feature = "v2_26", feature = "dox"))]
-    //fn all_cookies(&self) -> /*Ignored*/Vec<Cookie> {
-    //    unsafe { TODO: call soup_sys:soup_cookie_jar_all_cookies() }
-    //}
+    #[cfg(any(feature = "v2_26", feature = "dox"))]
+    fn all_cookies(&self) -> Vec<Cookie> {
+        unsafe {
+            FromGlibPtrContainer::from_glib_full(soup_sys::soup_cookie_jar_all_cookies(self.as_ref().to_glib_none().0))
+        }
+    }
 
-    //#[cfg(any(feature = "v2_26", feature = "dox"))]
-    //fn delete_cookie(&self, cookie: /*Ignored*/&mut Cookie) {
-    //    unsafe { TODO: call soup_sys:soup_cookie_jar_delete_cookie() }
-    //}
+    #[cfg(any(feature = "v2_26", feature = "dox"))]
+    fn delete_cookie(&self, cookie: &mut Cookie) {
+        unsafe {
+            soup_sys::soup_cookie_jar_delete_cookie(self.as_ref().to_glib_none().0, cookie.to_glib_none_mut().0);
+        }
+    }
 
     #[cfg(any(feature = "v2_30", feature = "dox"))]
     fn get_accept_policy(&self) -> CookieJarAcceptPolicy {
@@ -136,10 +141,12 @@ impl<O: IsA<CookieJar>> CookieJarExt for O {
         }
     }
 
-    //#[cfg(any(feature = "v2_40", feature = "dox"))]
-    //fn get_cookie_list(&self, uri: &mut URI, for_http: bool) -> /*Ignored*/Vec<Cookie> {
-    //    unsafe { TODO: call soup_sys:soup_cookie_jar_get_cookie_list() }
-    //}
+    #[cfg(any(feature = "v2_40", feature = "dox"))]
+    fn get_cookie_list(&self, uri: &mut URI, for_http: bool) -> Vec<Cookie> {
+        unsafe {
+            FromGlibPtrContainer::from_glib_full(soup_sys::soup_cookie_jar_get_cookie_list(self.as_ref().to_glib_none().0, uri.to_glib_none_mut().0, for_http.to_glib()))
+        }
+    }
 
     #[cfg(any(feature = "v2_24", feature = "dox"))]
     fn get_cookies(&self, uri: &mut URI, for_http: bool) -> Option<GString> {
@@ -191,10 +198,19 @@ impl<O: IsA<CookieJar>> CookieJarExt for O {
         }
     }
 
-    //fn connect_changed<Unsupported or ignored types>(&self, f: F) -> SignalHandlerId {
-    //    Ignored old_cookie: Soup.Cookie
-    //    Ignored new_cookie: Soup.Cookie
-    //}
+    fn connect_changed<F: Fn(&Self, &Cookie, &Cookie) + 'static>(&self, f: F) -> SignalHandlerId {
+        unsafe extern "C" fn changed_trampoline<P, F: Fn(&P, &Cookie, &Cookie) + 'static>(this: *mut soup_sys::SoupCookieJar, old_cookie: *mut soup_sys::SoupCookie, new_cookie: *mut soup_sys::SoupCookie, f: glib_sys::gpointer)
+            where P: IsA<CookieJar>
+        {
+            let f: &F = &*(f as *const F);
+            f(&CookieJar::from_glib_borrow(this).unsafe_cast(), &from_glib_borrow(old_cookie), &from_glib_borrow(new_cookie))
+        }
+        unsafe {
+            let f: Box_<F> = Box_::new(f);
+            connect_raw(self.as_ptr() as *mut _, b"changed\0".as_ptr() as *const _,
+                Some(transmute(changed_trampoline::<Self, F> as usize)), Box_::into_raw(f))
+        }
+    }
 
     #[cfg(any(feature = "v2_30", feature = "dox"))]
     fn connect_property_accept_policy_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId {

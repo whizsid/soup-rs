@@ -147,6 +147,14 @@ pub use self::websocket_connection::{WebsocketConnection, WebsocketConnectionCla
 #[cfg(any(feature = "v2_50", feature = "dox"))]
 pub use self::websocket_connection::WebsocketConnectionExt;
 
+#[cfg(any(feature = "v2_24", feature = "dox"))]
+mod cookie;
+#[cfg(any(feature = "v2_24", feature = "dox"))]
+pub use self::cookie::Cookie;
+
+mod date;
+pub use self::date::Date;
+
 mod message_body;
 pub use self::message_body::MessageBody;
 

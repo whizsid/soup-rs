@@ -29,6 +29,7 @@ generate = [
 	"Soup.CookieJar",
 	"Soup.CookieJarDB",
 	"Soup.CookieJarText",
+	"Soup.Date",
 	"Soup.HSTSEnforcer",
 	"Soup.HSTSEnforcerDB",
 	# "Soup.Logger",
@@ -153,6 +154,13 @@ status = "generate"
 	[[object.function]]
 	name="host_hash"
 	ignore=true
+
+[[object]]
+name="Soup.Cookie"
+status = "generate"
+    [[object.function]]
+    name = "equal"
+	ignore= true
 
 [[object]]
 name="Soup.Address"
