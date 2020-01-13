@@ -26,7 +26,6 @@ generate = [
 	"Soup.Cache",
 	"Soup.ContentDecoder",
 	"Soup.ContentSniffer",
-	"Soup.CookieJar",
 	"Soup.CookieJarDB",
 	"Soup.CookieJarText",
 	# "Soup.Date",
@@ -160,6 +159,16 @@ name="Soup.Cookie"
 status = "generate"
     [[object.function]]
     name = "equal"
+	ignore= true
+
+[[object]]
+name="Soup.CookieJar"
+status = "generate"
+    [[object.function]]
+    name = "add_cookie"
+	ignore= true
+    [[object.function]]
+    name = "add_cookie_with_first_party"
 	ignore= true
 
 [[object]]

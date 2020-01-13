@@ -51,14 +51,8 @@ impl Default for CookieJar {
 pub const NONE_COOKIE_JAR: Option<&CookieJar> = None;
 
 pub trait CookieJarExt: 'static {
-    #[cfg(any(feature = "v2_26", feature = "dox"))]
-    fn add_cookie(&self, cookie: &mut Cookie);
-
     #[cfg(any(feature = "v2_68", feature = "dox"))]
     fn add_cookie_full(&self, cookie: &mut Cookie, uri: Option<&mut URI>, first_party: Option<&mut URI>);
-
-    #[cfg(any(feature = "v2_40", feature = "dox"))]
-    fn add_cookie_with_first_party(&self, first_party: &mut URI, cookie: &mut Cookie);
 
     #[cfg(any(feature = "v2_26", feature = "dox"))]
     fn all_cookies(&self) -> Vec<Cookie>;
@@ -99,24 +93,10 @@ pub trait CookieJarExt: 'static {
 }
 
 impl<O: IsA<CookieJar>> CookieJarExt for O {
-    #[cfg(any(feature = "v2_26", feature = "dox"))]
-    fn add_cookie(&self, cookie: &mut Cookie) {
-        unsafe {
-            soup_sys::soup_cookie_jar_add_cookie(self.as_ref().to_glib_none().0, cookie.to_glib_full());
-        }
-    }
-
     #[cfg(any(feature = "v2_68", feature = "dox"))]
     fn add_cookie_full(&self, cookie: &mut Cookie, uri: Option<&mut URI>, first_party: Option<&mut URI>) {
         unsafe {
             soup_sys::soup_cookie_jar_add_cookie_full(self.as_ref().to_glib_none().0, cookie.to_glib_full(), uri.to_glib_none_mut().0, first_party.to_glib_none_mut().0);
-        }
-    }
-
-    #[cfg(any(feature = "v2_40", feature = "dox"))]
-    fn add_cookie_with_first_party(&self, first_party: &mut URI, cookie: &mut Cookie) {
-        unsafe {
-            soup_sys::soup_cookie_jar_add_cookie_with_first_party(self.as_ref().to_glib_none().0, first_party.to_glib_none_mut().0, cookie.to_glib_full());
         }
     }
 
