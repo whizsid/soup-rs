@@ -1,20 +1,18 @@
 # soup [![Build Status](https://travis-ci.org/whizsid/soup-rs.png?branch=master)](https://travis-ci.org/whizsid/soup-rs) 
 
-[Project site](http://gtk-rs.org/) | [Online documentation](http://gtk-rs.org/docs/)
+<aside class="notice">
+NOTE:- This is not the official libsoup Rust bindings. Official repository currently not supporting for latest gtk-rs stack.
+</aside>
+
+[GNOME Official Repo](https://gitlab.gnome.org/World/Rust/soup-rs/)
 
 __Rust__ bindings and wrappers for __libsoup__.
 
 ## Building
 
 __soup-rs__ expects __GTK+__, __GLib__ and __libsoup__ files to be installed on your system.
-See the [requirements page](http://gtk-rs.org/docs/requirements.html).
 
 ## Using
-
-We recommend using [crates from crates.io](https://crates.io/keywords/gtk-rs),
-as [demonstrated here](http://gtk-rs.org/#using).
-
-If you want to track the bleeding edge, use the git dependency instead:
 
 ```toml
 [dependencies]
