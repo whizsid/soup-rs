@@ -1,12 +1,12 @@
 # soup [![Build Status](https://travis-ci.org/whizsid/soup-rs.png?branch=master)](https://travis-ci.org/whizsid/soup-rs) 
 
+__Rust__ bindings and wrappers for __libsoup__.
+
 <aside class="notice">
-NOTE:- This is not the official libsoup Rust bindings. Official repository currently not supporting for latest gtk-rs stack.
+NOTE:- This is not the official libsoup Rust bindings repo. Official repository currently not supporting for latest gtk-rs stack.
 </aside>
 
 [GNOME Official Repo](https://gitlab.gnome.org/World/Rust/soup-rs/)
-
-__Rust__ bindings and wrappers for __libsoup__.
 
 ## Building
 
