@@ -92,9 +92,6 @@ pub trait WebsocketConnectionExt: 'static {
     #[cfg(any(feature = "v2_50", feature = "dox"))]
     fn get_uri(&self) -> Option<URI>;
 
-    #[cfg(any(feature = "v2_50", feature = "dox"))]
-    fn send_binary(&self, data: &[u8]);
-
     #[cfg(any(feature = "v2_68", feature = "dox"))]
     fn send_message(&self, type_: WebsocketDataType, message: &glib::Bytes);
 
@@ -210,14 +207,6 @@ impl<O: IsA<WebsocketConnection>> WebsocketConnectionExt for O {
     fn get_uri(&self) -> Option<URI> {
         unsafe {
             from_glib_none(soup_sys::soup_websocket_connection_get_uri(self.as_ref().to_glib_none().0))
-        }
-    }
-
-    #[cfg(any(feature = "v2_50", feature = "dox"))]
-    fn send_binary(&self, data: &[u8]) {
-        let length = data.len() as usize;
-        unsafe {
-            soup_sys::soup_websocket_connection_send_binary(self.as_ref().to_glib_none().0, data.to_glib_none().0, length);
         }
     }
 

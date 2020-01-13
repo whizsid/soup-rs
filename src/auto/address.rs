@@ -51,12 +51,6 @@ impl Address {
 pub const NONE_ADDRESS: Option<&Address> = None;
 
 pub trait AddressExt: 'static {
-    #[cfg(any(feature = "v2_26", feature = "dox"))]
-    fn equal_by_ip<P: IsA<Address>>(&self, addr2: &P) -> bool;
-
-    #[cfg(any(feature = "v2_26", feature = "dox"))]
-    fn equal_by_name<P: IsA<Address>>(&self, addr2: &P) -> bool;
-
     //#[cfg(any(feature = "v2_32", feature = "dox"))]
     //fn get_gsockaddr(&self) -> /*Ignored*/Option<gio::SocketAddress>;
 
@@ -67,12 +61,6 @@ pub trait AddressExt: 'static {
     fn get_port(&self) -> u32;
 
     //fn get_sockaddr(&self, len: i32) -> /*Unimplemented*/Option<Fundamental: Pointer>;
-
-    #[cfg(any(feature = "v2_26", feature = "dox"))]
-    fn hash_by_ip(&self) -> u32;
-
-    #[cfg(any(feature = "v2_26", feature = "dox"))]
-    fn hash_by_name(&self) -> u32;
 
     fn is_resolved(&self) -> bool;
 
@@ -88,20 +76,6 @@ pub trait AddressExt: 'static {
 }
 
 impl<O: IsA<Address>> AddressExt for O {
-    #[cfg(any(feature = "v2_26", feature = "dox"))]
-    fn equal_by_ip<P: IsA<Address>>(&self, addr2: &P) -> bool {
-        unsafe {
-            from_glib(soup_sys::soup_address_equal_by_ip(const_override(self.as_ref().to_glib_none().0), addr2.as_ref().to_glib_none().0))
-        }
-    }
-
-    #[cfg(any(feature = "v2_26", feature = "dox"))]
-    fn equal_by_name<P: IsA<Address>>(&self, addr2: &P) -> bool {
-        unsafe {
-            from_glib(soup_sys::soup_address_equal_by_name(const_override(self.as_ref().to_glib_none().0), addr2.as_ref().to_glib_none().0))
-        }
-    }
-
     //#[cfg(any(feature = "v2_32", feature = "dox"))]
     //fn get_gsockaddr(&self) -> /*Ignored*/Option<gio::SocketAddress> {
     //    unsafe { TODO: call soup_sys:soup_address_get_gsockaddr() }
@@ -128,20 +102,6 @@ impl<O: IsA<Address>> AddressExt for O {
     //fn get_sockaddr(&self, len: i32) -> /*Unimplemented*/Option<Fundamental: Pointer> {
     //    unsafe { TODO: call soup_sys:soup_address_get_sockaddr() }
     //}
-
-    #[cfg(any(feature = "v2_26", feature = "dox"))]
-    fn hash_by_ip(&self) -> u32 {
-        unsafe {
-            soup_sys::soup_address_hash_by_ip(const_override(self.as_ref().to_glib_none().0))
-        }
-    }
-
-    #[cfg(any(feature = "v2_26", feature = "dox"))]
-    fn hash_by_name(&self) -> u32 {
-        unsafe {
-            soup_sys::soup_address_hash_by_name(const_override(self.as_ref().to_glib_none().0))
-        }
-    }
 
     fn is_resolved(&self) -> bool {
         unsafe {

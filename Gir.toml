@@ -12,13 +12,17 @@ external_libraries = [
 ]
 
 generate = [
-	"Soup.Address",
+	# "Soup.Address",
 	"Soup.Auth",
 	"Soup.AuthBasic",
 	"Soup.AuthDigest",
+	# "Soup.AuthDomain",
+	# "Soup.AuthDomainBasic",
+	# "Soup.AuthDomainDigest",
 	"Soup.AuthManager",
 	"Soup.AuthNTLM",
 	"Soup.AuthNegotiate",
+	# "Soup.Buffer",
 	"Soup.Cache",
 	"Soup.ContentDecoder",
 	"Soup.ContentSniffer",
@@ -27,14 +31,21 @@ generate = [
 	"Soup.CookieJarText",
 	"Soup.HSTSEnforcer",
 	"Soup.HSTSEnforcerDB",
+	# "Soup.Logger",
 	"Soup.Message",
 	"Soup.MultipartInputStream",
 	"Soup.ProxyResolverDefault",
 	"Soup.Request",
+	# "Soup.RequestData",
+	# "Soup.RequestFile",
 	"Soup.RequestHTTP",
 	"Soup.Requester",
 	"Soup.Server",
-	"Soup.WebsocketConnection",
+	# "Soup.Session",
+	# "Soup.SessionAsync",
+	# "Soup.SessionSync",
+	# "Soup.Socket",
+	# "Soup.TLDError",
 	"Soup.AddressFamily",
 	"Soup.CacheResponse",
 	"Soup.CacheType",
@@ -53,11 +64,13 @@ generate = [
 	"Soup.RequesterError",
 	"Soup.SocketIOStatus",
 	"Soup.Status",
-	"Soup.TLDError",
 	"Soup.WebsocketCloseCode",
 	"Soup.WebsocketConnectionType",
 	"Soup.WebsocketDataType",
 	"Soup.WebsocketError",
+	# "Soup.WebsocketExtension",
+	# "Soup.WebsocketExtensionDeflate",
+	# "Soup.WebsocketExtensionManager",
 	"Soup.WebsocketState",
 	"Soup.XMLRPCError",
 	"Soup.XMLRPCFault",
@@ -134,3 +147,32 @@ status = "generate"
     [[object.function]]
     name = "equal"
 	ignore= true
+	[[object.function]]
+	name="host_equal"
+	ignore=true
+	[[object.function]]
+	name="host_hash"
+	ignore=true
+
+[[object]]
+name="Soup.Address"
+status="generate"
+	[[object.function]]
+	name = "equal_by_name"
+	ignore = true
+	[[object.function]]
+	name = "equal_by_ip"
+	ignore = true
+	[[object.function]]
+	name = "hash_by_ip"
+	ignore = true
+	[[object.function]]
+	name = "hash_by_name"
+	ignore = true
+
+[[object]]
+name="Soup.WebsocketConnection"
+status="generate"
+	[[object.function]]
+	name = "send_binary"
+	ignore = true

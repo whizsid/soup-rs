@@ -177,8 +177,6 @@ pub use self::enums::RequestError;
 pub use self::enums::RequesterError;
 pub use self::enums::SocketIOStatus;
 pub use self::enums::Status;
-#[cfg(any(feature = "v2_40", feature = "dox"))]
-pub use self::enums::TLDError;
 #[cfg(any(feature = "v2_50", feature = "dox"))]
 pub use self::enums::WebsocketCloseCode;
 #[cfg(any(feature = "v2_50", feature = "dox"))]

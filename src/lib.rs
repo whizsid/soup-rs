@@ -13,6 +13,7 @@ extern crate gobject_sys;
 extern crate gtk;
 extern crate gtk_sys;
 extern crate soup_sys;
+extern crate libc;
 
 macro_rules! assert_initialized_main_thread {
     () => (

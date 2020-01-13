@@ -95,20 +95,6 @@ impl URI {
         }
     }
 
-    #[cfg(any(feature = "v2_28", feature = "dox"))]
-    pub fn host_equal(&self, v2: &URI) -> bool {
-        unsafe {
-            from_glib(soup_sys::soup_uri_host_equal(self.to_glib_none().0, v2.to_glib_none().0))
-        }
-    }
-
-    #[cfg(any(feature = "v2_28", feature = "dox"))]
-    pub fn host_hash(&self) -> u32 {
-        unsafe {
-            soup_sys::soup_uri_host_hash(self.to_glib_none().0)
-        }
-    }
-
     pub fn set_fragment(&mut self, fragment: Option<&str>) {
         unsafe {
             soup_sys::soup_uri_set_fragment(self.to_glib_none_mut().0, fragment.to_glib_none().0);
